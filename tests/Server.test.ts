@@ -1,6 +1,8 @@
 
 import { expect } from "chai";
 import { Server } from "../src/Server";
+import { Socket } from "net";
+import { doesNotReject } from "assert";
 
 describe("Host", () => {
 
@@ -29,5 +31,25 @@ describe("Host", () => {
         expect(server.listening).to.be.true;
         await server.stop();
         expect(server.listening).to.be.false;
+    });
+
+    it("should accept connections", async () => {
+        await server.start();
+        expect(server.listening).to.be.true;
+        const client = new Socket();
+        return new Promise( (resolve) => {
+            client.connect( {port: 8080}, () => {
+                client.end();
+                resolve();
+            });
+        });
+    });
+
+    it("should error if starting on a used port", async () => {
+        await server.start();
+        expect(server.listening).to.be.true;
+        const newServer = new Server();
+        expect(newServer.start).to.throw;
+        expect(newServer.listening).to.be.false;
     });
 })

@@ -7,7 +7,8 @@ export class Server {
 
     constructor() {
         this.socketList = [];
-        this.server = createServer((socket: Socket) => {
+        this.server = createServer();
+        this.server.on('connection', (socket: Socket) => {
             this.socketList.push(socket);
         });
         this.server.on('close', () => {
@@ -22,11 +23,7 @@ export class Server {
     public async start(port: number = 8080): Promise<boolean> {
         console.log("Server starting...");
         return new Promise<boolean>( (resolve, reject) => {
-            this.server.on('error', (err) => {
-                console.log(err);
-                reject(err);
-            });
-            this.server.listen(port, () => {
+            this.server.listen( {port: port, host: "0.0.0.0"}, () => {
                 resolve(true);
             });
         });
