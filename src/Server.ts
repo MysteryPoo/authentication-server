@@ -1,21 +1,31 @@
 
 import { Socket, createServer, Server as netServer } from "net";
+import { Message } from "./Message";
 
-export class Server {
-    private socketList: Array<Socket>;
-    private server: netServer;
+export class Server extends netServer {
+    protected socketList : Array<Socket>;
+    protected messageQueue : Array<Message>;
 
     constructor() {
+        super();
         this.socketList = [];
-        this.server = createServer();
-        this.server.on('connection', (socket: Socket) => {
+        this.messageQueue = [];
+        this.on('connection', (socket: Socket) => {
             this.socketList.push(socket);
+            socket.on('data', (data: Buffer) => {
+                let index = this.socketList.findIndex( (value: Socket) => {
+                    return value === socket;
+                });
+                console.log("Data from socket: " + index);
+                console.log(data);
+                this.messageQueue.push(new Message(socket, data));
+            });
         });
-        this.server.on('close', () => {
+        this.on('close', () => {
             this.socketList = [];
             console.log("Server no longer listening...");
         });
-        this.server.on('listening', () => {
+        this.on('listening', () => {
             console.log("Listening...");
         });
     }
@@ -23,7 +33,7 @@ export class Server {
     public async start(port: number = 8080): Promise<boolean> {
         console.log("Server starting...");
         return new Promise<boolean>( (resolve, reject) => {
-            this.server.listen( {port: port, host: "0.0.0.0"}, () => {
+            this.listen( {port: port, host: "0.0.0.0"}, () => {
                 resolve(true);
             });
         });
@@ -32,15 +42,15 @@ export class Server {
     public async stop(): Promise<boolean> {
         console.log("Stopping server...");
         return new Promise<boolean>( (resolve, reject) => {
-            this.server.close(() => {
+            this.close(() => {
                 console.log("Server shutdown.");
                 resolve(true);
             });
         });
     }
 
-    public get listening(): boolean {
-        return this.server.listening;
+    public messagePop() : Message | undefined {
+        return this.messageQueue.pop();
     }
 
 }
