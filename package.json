@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "Generic authentication token provider for Dragon Ring games",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",

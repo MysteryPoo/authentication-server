@@ -6,10 +6,13 @@ export class Server extends netServer {
     protected socketList : Array<Socket>;
     protected messageQueue : Array<Message>;
 
+    private port : number;
+
     constructor() {
         super();
         this.socketList = [];
         this.messageQueue = [];
+        this.port = 0;
         this.on('connection', (socket: Socket) => {
             this.socketList.push(socket);
             socket.on('data', (data: Buffer) => {
@@ -26,13 +29,14 @@ export class Server extends netServer {
             console.log("Server no longer listening...");
         });
         this.on('listening', () => {
-            console.log("Listening...");
+            console.log("Listening on port: " + this.port);
         });
     }
 
     public async start(port: number = 8080): Promise<boolean> {
         console.log("Server starting...");
         return new Promise<boolean>( (resolve, reject) => {
+            this.port = port;
             this.listen( {port: port, host: "0.0.0.0"}, () => {
                 resolve(true);
             });
