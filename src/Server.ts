@@ -1,29 +1,17 @@
 
 import { Socket, createServer, Server as netServer } from "net";
-import { Message } from "./Message";
+import { Client } from "./Client";
 
 export class Server extends netServer {
-    protected socketList : Array<Socket>;
-    protected messageQueue : Array<Message>;
+    protected socketList : Array<Client>;
 
     private port : number;
 
     constructor() {
         super();
         this.socketList = [];
-        this.messageQueue = [];
         this.port = 0;
-        this.on('connection', (socket: Socket) => {
-            this.socketList.push(socket);
-            socket.on('data', (data: Buffer) => {
-                let index = this.socketList.findIndex( (value: Socket) => {
-                    return value === socket;
-                });
-                console.log("Data from socket: " + index);
-                console.log(data);
-                this.messageQueue.push(new Message(socket, data));
-            });
-        });
+        this.on('connection', this.onConnection);
         this.on('close', () => {
             this.socketList = [];
             console.log("Server no longer listening...");
@@ -53,8 +41,9 @@ export class Server extends netServer {
         });
     }
 
-    public messagePop() : Message | undefined {
-        return this.messageQueue.pop();
+    private onConnection( rawSocket : Socket) {
+        const socket = new Client(rawSocket);
+        this.socketList.push(socket);
     }
 
 }

@@ -2,7 +2,7 @@
 import { expect } from "chai";
 import { Server } from "../src/Server";
 import { Socket } from "net";
-import { Message } from "../src/Message";
+import { Client } from "../src/Client";
 
 class ServerWrapper extends Server {
 
@@ -10,11 +10,7 @@ class ServerWrapper extends Server {
         super();
     }
 
-    public get getMessageQueue() : Array<Message> {
-        return this.messageQueue;
-    }
-
-    public get getSocketList() : Array<Socket> {
+    public get getSocketList() : Array<Client> {
         return this.socketList;
     }
 };
@@ -75,18 +71,10 @@ describe("Server", () => {
                 client1.end(buffer1, () => {
                     setTimeout( () => {
                         resolve();
-                    }, 1);
+                    }, 2);
                 });
             });
         });
-        expect(server.getMessageQueue.length).to.equal(1);
-        let msg : Message | undefined = server.messagePop();
-        expect(server.getMessageQueue.length).to.equal(0);
-        expect(msg).to.be.instanceOf(Message);
-        if(msg) {
-            expect(msg.socket).to.equal(server.getSocketList[0]);
-            expect(msg.message).to.deep.equal(buffer1);
-        }
         return server.stop();
     });
 });
