@@ -4,23 +4,12 @@ import { Server } from "../src/Server";
 import { Socket } from "net";
 import { Client } from "../src/Client";
 
-class ServerWrapper extends Server {
-
-    constructor() {
-        super();
-    }
-
-    public get getSocketList() : Array<Client> {
-        return this.socketList;
-    }
-};
-
 describe("Server", () => {
 
-    var server : ServerWrapper;
+    var server : Server;
 
     beforeEach( (done) => {
-        server = new ServerWrapper();
+        server = new Server();
         expect(server.listening).to.be.false;
         done();
     });
