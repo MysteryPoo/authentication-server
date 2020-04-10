@@ -12,3 +12,10 @@ export abstract class MessageBase {
     abstract serialize() : Buffer;
     abstract deserialize(buffer : Buffer) : void;
 }
+
+export interface IMessageBase {
+
+    serialize() : Buffer;
+    deserialize(buffer : Buffer) : void;
+    
+}

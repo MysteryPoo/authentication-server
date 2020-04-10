@@ -1,4 +1,4 @@
-
+/// TODO : Rename to GetAvatarURL
 import { MessageBase } from "./MessageBase";
 
 const size : number = 6;
