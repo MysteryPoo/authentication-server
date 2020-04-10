@@ -13,7 +13,7 @@ describe("Ping", () => {
         let messageId : number = getRandomInt(255);
         let expectedSize : number = 9;
         let timeValue : number = getRandomInt(65535);
-        let truth : Buffer = Buffer.allocUnsafe(9);
+        let truth : Buffer = Buffer.allocUnsafe(expectedSize);
         truth.writeUInt8(messageId, 0);
         truth.writeUInt32LE(expectedSize, 1);
         truth.writeUInt32LE(timeValue, 5);
@@ -31,7 +31,7 @@ describe("Ping", () => {
         // Setup truth
         let timeValue : number = getRandomInt(65535);
         let truth : Buffer = Buffer.allocUnsafe(4);
-        truth.writeInt32LE(timeValue, 0);
+        truth.writeUInt32LE(timeValue, 0);
 
         let ping : Ping = new Ping(1, truth);
         ping.deserialize(truth);
@@ -41,10 +41,13 @@ describe("Ping", () => {
         done();
     });
 
-    it("should throw if an invalid buffer is received", (done) => {
-        let lie : Buffer = Buffer.allocUnsafe(2);
+    it("should catch error for poorly formatted data", (done) => {
+        let lie = Buffer.allocUnsafe(32);
+
         let ping : Ping = new Ping(1);
-        expect(ping.deserialize(lie)).to.throw;
+        ping.deserialize(lie);
+
         done();
     });
+
 });

@@ -1,5 +1,4 @@
 
-//import { IMessageHandler } from "../IMessageHandler";
 import { MessageBase } from "./MessageBase";
 
 const size : number = 9;
@@ -22,27 +21,13 @@ export class Ping extends MessageBase {
 
     public deserialize(buffer: Buffer) : void {
         try {
+            const bufferSize = 4;
+            if(buffer.length != bufferSize) {
+                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
+            }
             this.time = buffer.readUInt32LE(0);
         } catch (e) {
-            console.log("Error: Attempting to deserialize non-Ping as Ping.");
-            console.log(e);
+            console.error(e);
         }
     }
 }
-/*
-export class PingHandler implements IMessageHandler {
-    private socket : Socket;
-    private ping : Ping;
-
-    constructor(socket : Socket, ping : Ping) {
-        this.socket = socket;
-        this.ping = ping;
-    }
-
-    public handle() : void {
-        if(this.ping.isValid) {
-            this.socket.write(this.ping.serialize());
-        }
-    }
-}
-*/
