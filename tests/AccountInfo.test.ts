@@ -31,9 +31,9 @@ describe("SetVisibleUsername", () => {
 
         let setVisibleUsername : SetVisibleUsername = new SetVisibleUsername(1, lie);
 
-        if (!setVisibleUsername.valid) {
-            done();
-        }
+        expect(setVisibleUsername.valid).to.be.false;
+
+        done();
     });
 
 });

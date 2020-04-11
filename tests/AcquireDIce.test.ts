@@ -53,7 +53,6 @@ describe("GetDiceURL", () => {
         expect(getDice.valid).to.be.false;
 
         done();
-        
     });
 
 });

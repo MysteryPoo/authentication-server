@@ -1,15 +1,19 @@
 /// TODO : Rename to GetAvatarURL
-import { MessageBase } from "./MessageBase";
+import { IMessageBase } from "./MessageBase";
 
 const size : number = 6;
 
-export class AcquireAvatar extends MessageBase {
+export class AcquireAvatar implements IMessageBase {
+
+    valid : boolean = false;
 
     public url : string = "";
     public id : string = "";
 
-    constructor(protected messageId : number, protected buffer?: Buffer) {
-        super(messageId, buffer);
+    constructor(protected messageId : number, buffer?: Buffer) {
+        if (buffer) {
+            this.deserialize(buffer);
+        }
     }
 
     public serialize() : Buffer {
@@ -34,8 +38,11 @@ export class AcquireAvatar extends MessageBase {
             }
 
             this.id = buffer.toString('utf8', 1, 1 + idLength);
+
+            this.valid = true;
         } catch (e) {
             console.error(e);
+            this.valid = false;
         }
     }
 }

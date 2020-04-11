@@ -1,14 +1,18 @@
 
-import { MessageBase } from "./MessageBase";
+import { IMessageBase } from "./MessageBase";
 
 const size : number = 9;
 
-export class Ping extends MessageBase {
+export class Ping implements IMessageBase {
+
+    valid : boolean = false;
 
     public time: number = 0;
 
-    constructor(protected messageId : number, protected buffer?: Buffer) {
-        super(messageId, buffer);
+    constructor(protected messageId : number, buffer?: Buffer) {
+        if (buffer) {
+            this.deserialize(buffer);
+        }
     }
 
     public serialize() : Buffer {
@@ -26,8 +30,10 @@ export class Ping extends MessageBase {
                 throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
             }
             this.time = buffer.readUInt32LE(0);
+            this.valid = true;
         } catch (e) {
             console.error(e);
+            this.valid = false;
         }
     }
 }

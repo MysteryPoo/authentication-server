@@ -5,7 +5,7 @@ const size : number = 6;
 
 export class GetDiceURL implements IMessageBase {
     
-    valid: boolean = false;
+    valid : boolean = false;
 
     public url : string = "";
     public id : string = "";

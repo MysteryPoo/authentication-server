@@ -44,8 +44,9 @@ describe("Ping", () => {
     it("should catch error for poorly formatted data", (done) => {
         let lie = Buffer.allocUnsafe(32);
 
-        let ping : Ping = new Ping(1);
-        ping.deserialize(lie);
+        let ping : Ping = new Ping(1, lie);
+
+        expect(ping.valid).to.be.false;
 
         done();
     });

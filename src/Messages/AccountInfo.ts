@@ -5,7 +5,7 @@ const size = 0;
 
 export class SetVisibleUsername implements IMessageBase {
     
-    valid: boolean = false;
+    valid : boolean = false;
 
     public username : string = "";
 

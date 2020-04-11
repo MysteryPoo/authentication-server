@@ -48,8 +48,9 @@ describe("AcquireAvatar", () => {
     it("should catch error for poorly formatted data", (done) => {
         let lie = Buffer.allocUnsafe(32);
 
-        let acquireAvatar : AcquireAvatar = new AcquireAvatar(1);
-        acquireAvatar.deserialize(lie);
+        let acquireAvatar : AcquireAvatar = new AcquireAvatar(1, lie);
+
+        expect(acquireAvatar.valid).to.be.false;
 
         done();
     });
