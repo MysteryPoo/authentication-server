@@ -29,10 +29,11 @@ describe("SetVisibleUsername", () => {
     it("should catch error for poorly formatted data", (done) => {
         let lie = Buffer.allocUnsafe(32);
 
-        let setVisibleUsername : SetVisibleUsername = new SetVisibleUsername(1);
-        setVisibleUsername.deserialize(lie);
+        let setVisibleUsername : SetVisibleUsername = new SetVisibleUsername(1, lie);
 
-        done();
+        if (!setVisibleUsername.valid) {
+            done();
+        }
     });
 
 });
