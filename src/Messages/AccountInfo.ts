@@ -52,6 +52,7 @@ export class SetVisibleUsernameHandler implements IMessageHandler {
         let message : SetVisibleUsername = new SetVisibleUsername(this.messageId, buffer);
 
         if (message.valid) {
+            // TODO : Implement this
             return true;
         } else {
             return false;

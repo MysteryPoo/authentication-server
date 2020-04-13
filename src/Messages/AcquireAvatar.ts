@@ -2,15 +2,16 @@
 import { IMessageBase, IMessageHandler } from "./MessageBase";
 import { IServer } from "../Server";
 import { Socket } from "net";
+import { ObjectId } from "mongodb";
 
 const size : number = 6;
 
-class AcquireAvatar implements IMessageBase {
+export class AcquireAvatar implements IMessageBase {
 
     valid : boolean = false;
 
     public url : string = "";
-    public id : string = "";
+    public id : ObjectId = new ObjectId();
 
     constructor(protected messageId : number, buffer?: Buffer) {
         if (buffer) {
@@ -39,7 +40,7 @@ class AcquireAvatar implements IMessageBase {
                 throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
             }
 
-            this.id = buffer.toString('utf8', 1, 1 + idLength);
+            this.id = new ObjectId(buffer.toString('utf8', 1, 1 + idLength));
 
             this.valid = true;
         } catch (e) {
@@ -57,7 +58,13 @@ export class AcquireAvatarHandler implements IMessageHandler {
 
     public handle(buffer : Buffer, mySocket : Socket): boolean {
         let message : AcquireAvatar = new AcquireAvatar(this.messageId, buffer);
-        return true;
+
+        if (message.valid) {
+            // TODO : Implement this
+            return true;
+        } else {
+            return false;
+        }
     }
     
 }

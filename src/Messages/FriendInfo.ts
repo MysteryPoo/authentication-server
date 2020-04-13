@@ -1,5 +1,7 @@
 /// TODO : Rename to AddRemoveFriend
-import { IMessageBase } from "./MessageBase";
+import { IMessageBase, IMessageHandler } from "./MessageBase";
+import { IServer } from "../Server";
+import { Socket } from "net";
 import { ObjectId } from "mongodb";
 
 const size = 8;
@@ -20,15 +22,11 @@ export class AddRemoveFriend implements IMessageBase {
     }
     
     serialize(): Buffer {
-        let idLength : number = this.id.toHexString().length;
-        let usernameLength : number = this.username.length;
+        let idLength : number = Buffer.byteLength(this.id.toHexString(), 'utf-8');
+        let usernameLength : number = Buffer.byteLength(this.username, 'utf-8');
         let flags : number = 0;
-        if (this.online) {
-            flags |= 0b01;
-        }
-        if (this.remove) {
-            flags |= 0b10;
-        }
+        flags |= this.online ? 0b01 : 0b00;
+        flags |= this.remove ? 0b10 : 0b00;
 
         let bufferSize : number = size + idLength + usernameLength;
         let buffer : Buffer = Buffer.allocUnsafe(bufferSize);
@@ -36,10 +34,10 @@ export class AddRemoveFriend implements IMessageBase {
         buffer.writeUInt8(this.messageId, 0);
         buffer.writeUInt32LE(bufferSize, 1);
         buffer.writeUInt8(idLength, 5);
-        buffer.write(this.id.toHexString(), 6, this.id.toHexString().length, 'utf-8');
-        buffer.writeUInt8(usernameLength, 7 + idLength);
-        buffer.write(this.username, 8 + idLength, this.username.length, 'utf-8');
-        buffer.writeUInt8(flags, 9 + idLength + usernameLength);
+        buffer.write(this.id.toHexString(), 6, idLength, 'utf-8');
+        buffer.writeUInt8(usernameLength, 6 + idLength);
+        buffer.write(this.username, 7 + idLength, usernameLength, 'utf-8');
+        buffer.writeUInt8(flags, 7 + idLength + usernameLength);
         return buffer;
     }
 
@@ -54,7 +52,7 @@ export class AddRemoveFriend implements IMessageBase {
             }
 
             this.id = new ObjectId(buffer.toString('utf8', 1, 1 + idLength));
-            let flags = buffer.readUInt8(2 + idLength);
+            let flags = buffer.readUInt8(1 + idLength);
             this.remove = flags & 0b1 ? true : false;
 
             this.valid = true;
@@ -64,4 +62,23 @@ export class AddRemoveFriend implements IMessageBase {
         }
     }
 
+}
+
+export class AddRemoveFriendHandler implements IMessageHandler {
+    
+    constructor(readonly serverRef: IServer, readonly messageId: number) {
+
+    }
+
+    public handle(buffer : Buffer, mySocket : Socket): boolean {
+        let message : AddRemoveFriend = new AddRemoveFriend(this.messageId, buffer);
+
+        if (message.valid) {
+            // TODO : Implement this
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
 }
