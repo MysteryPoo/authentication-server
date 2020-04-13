@@ -1,5 +1,7 @@
 /// TODO : Rename this to SetVisibleUsername
-import { IMessageBase } from "./MessageBase";
+import { IMessageBase, IMessageHandler } from "./MessageBase";
+import { IServer } from "../Server";
+import { Socket } from "net";
 
 const size = 0;
 
@@ -16,6 +18,7 @@ export class SetVisibleUsername implements IMessageBase {
     }
 
     serialize(): Buffer {
+        // TODO : Implement this with an error code for the client to process
         throw new Error("Method not implemented.");
     }
     
@@ -37,4 +40,23 @@ export class SetVisibleUsername implements IMessageBase {
         }
     }
 
+}
+
+export class SetVisibleUsernameHandler implements IMessageHandler {
+    
+    constructor(readonly serverRef : IServer, readonly messageId : number) {
+
+    }
+
+    handle(buffer: Buffer, mySocket: Socket): boolean {
+        let message : SetVisibleUsername = new SetVisibleUsername(this.messageId, buffer);
+
+        if (message.valid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    
 }
