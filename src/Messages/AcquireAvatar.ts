@@ -1,9 +1,11 @@
 /// TODO : Rename to GetAvatarURL
-import { IMessageBase } from "./MessageBase";
+import { IMessageBase, IMessageHandler } from "./MessageBase";
+import { IServer } from "../Server";
+import { Socket } from "net";
 
 const size : number = 6;
 
-export class AcquireAvatar implements IMessageBase {
+class AcquireAvatar implements IMessageBase {
 
     valid : boolean = false;
 
@@ -45,4 +47,17 @@ export class AcquireAvatar implements IMessageBase {
             this.valid = false;
         }
     }
+}
+
+export class AcquireAvatarHandler implements IMessageHandler {
+    
+    constructor(readonly serverRef: IServer, readonly messageId: number) {
+
+    }
+
+    public handle(buffer : Buffer, mySocket : Socket): boolean {
+        let message : AcquireAvatar = new AcquireAvatar(this.messageId, buffer);
+        return true;
+    }
+    
 }

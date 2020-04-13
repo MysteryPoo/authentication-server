@@ -1,5 +1,7 @@
 
-import { IMessageBase } from "./MessageBase";
+import { IMessageBase, IMessageHandler } from "./MessageBase";
+import { IServer } from "../Server";
+import { Socket } from "net";
 
 const size : number = 9;
 
@@ -34,6 +36,23 @@ export class Ping implements IMessageBase {
         } catch (e) {
             console.error(e);
             this.valid = false;
+        }
+    }
+}
+
+export class PingHandler implements IMessageHandler {
+
+    constructor(readonly serverRef : IServer, readonly messageId : number) {
+
+    }
+
+    public handle(buffer : Buffer, mySocket: Socket) : boolean {
+        let message : Ping = new Ping(this.messageId, buffer);
+
+        if (message.valid) {
+            return mySocket.write(message.serialize());
+        } else {
+            return false;
         }
     }
 }

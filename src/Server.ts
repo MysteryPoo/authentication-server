@@ -1,16 +1,37 @@
 
 import { Socket, Server as netServer } from "net";
 import { Client } from "./Client";
+import { IMessageHandler } from "./Messages/MessageBase";
+import { AcquireAvatarHandler } from "./Messages/AcquireAvatar";
+import { PingHandler } from "./Messages/Ping";
 
-export class Server extends netServer {
-    protected socketList : Array<Client>;
+export interface IServer {
+    socketList : Array<Client>;
+    handlerList : Array<IMessageHandler>;
+}
 
-    private port : number;
+export enum MESSAGE_ID {
+    FIRST,
+    "AcquireAvatar" = FIRST,
+    "AcquireDice",
+    "Challenge",
+    "MessageBase",
+    "Ping",
+    "SetUsername",
+    LAST = MESSAGE_ID.SetUsername
+};
+
+export class Server extends netServer implements IServer {
+
+    socketList : Array<Client> = [];
+    handlerList : Array<IMessageHandler> = [];
+
+    private port : number = 0;
 
     constructor() {
         super();
-        this.socketList = [];
-        this.port = 0;
+        this.handlerList[MESSAGE_ID.AcquireAvatar] = new AcquireAvatarHandler(this, MESSAGE_ID.AcquireAvatar);
+        this.handlerList[MESSAGE_ID.Ping] = new PingHandler(this, MESSAGE_ID.Ping);
         this.on('connection', this.onConnection);
         this.on('close', () => {
             this.socketList = [];
@@ -42,7 +63,7 @@ export class Server extends netServer {
     }
 
     private onConnection( rawSocket : Socket) {
-        const socket = new Client(rawSocket);
+        const socket = new Client(rawSocket, this);
         this.socketList.push(socket);
     }
 

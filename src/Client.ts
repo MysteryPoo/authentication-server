@@ -1,46 +1,21 @@
 
 import { Socket } from "net";
-import { IUser, IUserModel } from "./Models/User.model";
-import { Ping } from "./Messages/Ping";
-import { AcquireAvatar } from "./Messages/AcquireAvatar";
-
-enum MESSAGE_ID {
-	"AcquireAvatar",
-	"AcquireDice",
-	"Challenge",
-	"MessageBase",
-	"Ping",
-	"SetUsername"
-};
+import { IServer, MESSAGE_ID } from "./Server";
 
 export class Client {
 
-    public uid : number;
+    public uid : number = 0;
 
-    constructor(private socket : Socket) {
-        this.uid = 0;
+    constructor(private socket : Socket, private serverRef : IServer) {
+        
         this.socket.on('data', (data : Buffer) => {
-            let tell = 0;
-            let success = false;
+            let tell : number = 0;
+            let success : boolean = false;
             while(tell < data.byteLength) {
                 let messageType : MESSAGE_ID = data.readUInt8(tell);
                 let messageSize : number = data.readUInt32LE(tell + 1);
                 let messageData : Buffer = data.slice(tell + 5, tell + messageSize);
-                switch(messageType) {
-                    case MESSAGE_ID.AcquireAvatar:
-                        let acquireAvatar : AcquireAvatar = new AcquireAvatar(messageType);
-                        acquireAvatar.deserialize(messageData);
-                        
-                        break;
-                    case MESSAGE_ID.Ping:
-                        let ping : Ping = new Ping(messageType);
-                        ping.deserialize(messageData);
-                        success = this.socket.write(ping.serialize());
-                        break;
-                    default:
-                        console.log("Unsupported message received.");
-                        break;
-                }
+                success = success && this.serverRef.handlerList[messageType].handle(messageData, socket);
                 tell += messageSize;
             }
             console.log(data);
