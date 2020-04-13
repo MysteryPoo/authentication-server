@@ -1,5 +1,8 @@
 /// TODO : Rename to GetDiceURL
-import { IMessageBase } from "./MessageBase";
+import { IMessageBase, IMessageHandler } from "./MessageBase";
+import { IServer } from "../Server";
+import { Socket } from "net";
+import { ObjectId } from "mongodb";
 
 const size : number = 6;
 
@@ -8,10 +11,10 @@ export class GetDiceURL implements IMessageBase {
     valid : boolean = false;
 
     public url : string = "";
-    public id : string = "";
+    public id : ObjectId = new ObjectId();
 
     constructor(protected messageId : number, buffer?: Buffer) {
-        if(buffer) {
+        if (buffer) {
             this.deserialize(buffer);
         }
     }
@@ -37,11 +40,31 @@ export class GetDiceURL implements IMessageBase {
                 throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
             }
 
-            this.id = buffer.toString('utf8', 1, 1 + idLength);
+            this.id = new ObjectId(buffer.toString('utf8', 1, 1 + idLength));
+
             this.valid = true;
         } catch (e) {
             console.error(e);
             this.valid = false;
         }
     }
+}
+
+export class GetDiceURLHandler implements IMessageHandler {
+    
+    constructor(readonly serverRef: IServer, readonly messageId: number) {
+
+    }
+
+    public handle(buffer : Buffer, mySocket : Socket): boolean {
+        let message : GetDiceURL = new GetDiceURL(this.messageId, buffer);
+
+        if (message.valid) {
+            // TODO : Implement this
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
 }

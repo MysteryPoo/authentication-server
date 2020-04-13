@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 
 const size : number = 6;
 
-export class AcquireAvatar implements IMessageBase {
+export class GetAvatarURL implements IMessageBase {
 
     valid : boolean = false;
 
@@ -50,14 +50,14 @@ export class AcquireAvatar implements IMessageBase {
     }
 }
 
-export class AcquireAvatarHandler implements IMessageHandler {
+export class GetAvatarURLHandler implements IMessageHandler {
     
     constructor(readonly serverRef: IServer, readonly messageId: number) {
 
     }
 
     public handle(buffer : Buffer, mySocket : Socket): boolean {
-        let message : AcquireAvatar = new AcquireAvatar(this.messageId, buffer);
+        let message : GetAvatarURL = new GetAvatarURL(this.messageId, buffer);
 
         if (message.valid) {
             // TODO : Implement this

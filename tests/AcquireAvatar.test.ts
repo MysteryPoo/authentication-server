@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { AcquireAvatarHandler, AcquireAvatar } from "../src/Messages/AcquireAvatar";
+import { GetAvatarURLHandler, GetAvatarURL } from "../src/Messages/AcquireAvatar";
 import { ServerMock } from "./Mocks/ServerMock";
 import { SocketMock } from "./Mocks/SocketMock";
 import { ObjectId } from "mongodb";
@@ -39,7 +39,7 @@ describe("AcquireAvatar Message", () => {
         truth.write(url, 6, url.length, 'utf8');
 
         // Instatiate test instance
-        let acquireAvatar : AcquireAvatar = new AcquireAvatar(messageId);
+        let acquireAvatar : GetAvatarURL = new GetAvatarURL(messageId);
         acquireAvatar.url = url;
         let buffer : Buffer = acquireAvatar.serialize();
         
@@ -55,7 +55,7 @@ describe("AcquireAvatar Message", () => {
         truth.writeUInt8(idLength, 0);
         truth.write(id.toHexString(), 1, idLength, 'utf8');
 
-        let acquireAvatar : AcquireAvatar = new AcquireAvatar(1);
+        let acquireAvatar : GetAvatarURL = new GetAvatarURL(1);
         expect(acquireAvatar.valid).to.be.false;
 
         acquireAvatar.deserialize(truth);
@@ -69,7 +69,7 @@ describe("AcquireAvatar Message", () => {
     it("should catch error for poorly formatted data", (done) => {
         let lie = Buffer.allocUnsafe(32);
 
-        let acquireAvatar : AcquireAvatar = new AcquireAvatar(1, lie);
+        let acquireAvatar : GetAvatarURL = new GetAvatarURL(1, lie);
 
         expect(acquireAvatar.valid).to.be.false;
 
@@ -82,7 +82,7 @@ describe("AcquireAvatar Handler", () => {
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
         let mySocket : SocketMock = new SocketMock();
-        let handler : AcquireAvatarHandler = new AcquireAvatarHandler(server, 1);
+        let handler : GetAvatarURLHandler = new GetAvatarURLHandler(server, 1);
 
         expect(handler.handle(setupIncomingMessage(true), mySocket)).to.be.true;
 
@@ -92,7 +92,7 @@ describe("AcquireAvatar Handler", () => {
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
         let mySocket : SocketMock = new SocketMock();
-        let handler : AcquireAvatarHandler = new AcquireAvatarHandler(server, 1);
+        let handler : GetAvatarURLHandler = new GetAvatarURLHandler(server, 1);
 
         expect(handler.handle(setupIncomingMessage(false), mySocket)).to.be.false;
 

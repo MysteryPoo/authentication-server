@@ -1,13 +1,30 @@
 
 import { expect } from "chai";
-import { GetDiceURL } from "../src/Messages/AcquireDice";
-import { fail } from "assert";
+import { GetDiceURL, GetDiceURLHandler } from "../src/Messages/AcquireDice";
+import { ServerMock } from "./Mocks/ServerMock";
+import { SocketMock } from "./Mocks/SocketMock";
+import { ObjectId } from "mongodb";
 
 function getRandomInt(max : number) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-describe("GetDiceURL", () => {
+function setupIncomingMessage(good : boolean) : Buffer {
+    let incomingMessage : Buffer;
+    if(good) {
+        let id : ObjectId = new ObjectId();
+        let byteLength : number = Buffer.byteLength(id.toHexString(), 'utf-8');
+        incomingMessage = Buffer.allocUnsafe(1 + byteLength);
+        incomingMessage.writeUInt8(byteLength, 0);
+        incomingMessage.write(id.toHexString(), 1, byteLength, 'utf-8');
+    } else {
+        incomingMessage = Buffer.allocUnsafe(32);
+    }
+
+    return incomingMessage;
+}
+
+describe("GetDiceURL Message", () => {
 
     it("should serialize into a valid buffer", (done) => {
         // Setup truth
@@ -33,14 +50,19 @@ describe("GetDiceURL", () => {
 
     it("should deserialize to a valid url if valid buffer received", (done) => {
         // Setup truth
-        let id : string = "ABCD1234EFG";
-        let truth : Buffer = Buffer.allocUnsafe(1 + id.length);
-        truth.writeUInt8(id.length, 0);
-        truth.write(id, 1, id.length, 'utf8');
+        let id : ObjectId = new ObjectId();
+        let idLength : number = Buffer.byteLength(id.toHexString(), 'utf-8');
+        let truth : Buffer = Buffer.allocUnsafe(1 + idLength);
+        truth.writeUInt8(idLength, 0);
+        truth.write(id.toHexString(), 1, idLength, 'utf8');
 
-        let getDice : GetDiceURL = new GetDiceURL(1, truth);
+        let getDice : GetDiceURL = new GetDiceURL(1);
+        expect(getDice.valid).to.be.false;
 
-        expect(getDice.id).to.equal(id);
+        getDice.deserialize(truth);
+        expect(getDice.valid).to.be.true;
+
+        expect(getDice.id.equals(id)).to.be.true;
 
         done();
     });
@@ -51,6 +73,30 @@ describe("GetDiceURL", () => {
         let getDice : GetDiceURL = new GetDiceURL(1, lie);
 
         expect(getDice.valid).to.be.false;
+
+        done();
+    });
+
+});
+
+describe("GetDiceURL Handler", () => {
+
+    it("should respond with a valid request", (done) => {
+        let server : ServerMock = new ServerMock();
+        let mySocket : SocketMock = new SocketMock();
+        let handler : GetDiceURLHandler = new GetDiceURLHandler(server, 1);
+
+        expect(handler.handle(setupIncomingMessage(true), mySocket)).to.be.true;
+
+        done();
+    });
+
+    it("should survive with an invalid request", (done) => {
+        let server : ServerMock = new ServerMock();
+        let mySocket : SocketMock = new SocketMock();
+        let handler : GetDiceURLHandler = new GetDiceURLHandler(server, 1);
+
+        expect(handler.handle(setupIncomingMessage(false), mySocket)).to.be.false;
 
         done();
     });

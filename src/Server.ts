@@ -2,7 +2,7 @@
 import { Socket, Server as netServer } from "net";
 import { Client } from "./Client";
 import { IMessageHandler } from "./Messages/MessageBase";
-import { AcquireAvatarHandler } from "./Messages/AcquireAvatar";
+import { GetAvatarURLHandler } from "./Messages/AcquireAvatar";
 import { PingHandler } from "./Messages/Ping";
 
 export interface IServer {
@@ -30,7 +30,7 @@ export class Server extends netServer implements IServer {
 
     constructor() {
         super();
-        this.handlerList[MESSAGE_ID.AcquireAvatar] = new AcquireAvatarHandler(this, MESSAGE_ID.AcquireAvatar);
+        this.handlerList[MESSAGE_ID.AcquireAvatar] = new GetAvatarURLHandler(this, MESSAGE_ID.AcquireAvatar);
         this.handlerList[MESSAGE_ID.Ping] = new PingHandler(this, MESSAGE_ID.Ping);
         this.on('connection', this.onConnection);
         this.on('close', () => {
