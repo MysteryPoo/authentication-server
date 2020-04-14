@@ -1,7 +1,7 @@
 
 import { IMessageBase, IMessageHandler } from "./MessageBase";
 import { IServer } from "../Server";
-import { Socket } from "net";
+import { IClient } from "../Client";
 
 const size : number = 9;
 
@@ -46,11 +46,11 @@ export class PingHandler implements IMessageHandler {
 
     }
 
-    public handle(buffer : Buffer, mySocket: Socket) : boolean {
+    public handle(buffer : Buffer, myClient: IClient) : boolean {
         let message : Ping = new Ping(this.messageId, buffer);
 
         if (message.valid) {
-            return mySocket.write(message.serialize());
+            return myClient.write(message.serialize());
         } else {
             return false;
         }

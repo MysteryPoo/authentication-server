@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "mongoose": "^5.7.12"
+    "mongoose": "^5.7.12",
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
     "@types/chai": "^4.2.4",
@@ -13,6 +14,7 @@
     "@types/mongodb": "^3.3.11",
     "@types/mongoose": "^5.5.32",
     "@types/node": "^12.12.6",
+    "@types/uuid": "^7.0.2",
     "chai": "^4.2.0",
     "mocha": "^6.2.3",
     "nyc": "^14.1.1",

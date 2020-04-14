@@ -1,7 +1,7 @@
 /// TODO : Rename to GetAvatarURL
 import { IMessageBase, IMessageHandler } from "./MessageBase";
 import { IServer } from "../Server";
-import { Socket } from "net";
+import { IClient } from "../Client";
 import { ObjectId } from "mongodb";
 
 const size : number = 6;
@@ -56,7 +56,7 @@ export class GetAvatarURLHandler implements IMessageHandler {
 
     }
 
-    public handle(buffer : Buffer, mySocket : Socket): boolean {
+    public handle(buffer : Buffer, myClient : IClient): boolean {
         let message : GetAvatarURL = new GetAvatarURL(this.messageId, buffer);
 
         if (message.valid) {

@@ -2,6 +2,7 @@
 import { Socket, Server as netServer } from "net";
 import { Client } from "./Client";
 import { IMessageHandler } from "./Messages/MessageBase";
+import { AuthenticationChallenge } from "./Messages/Challenge";
 import { GetAvatarURLHandler } from "./Messages/AcquireAvatar";
 import { PingHandler } from "./Messages/Ping";
 
@@ -65,6 +66,10 @@ export class Server extends netServer implements IServer {
     private onConnection( rawSocket : Socket) {
         const socket = new Client(rawSocket, this);
         this.socketList.push(socket);
+
+        let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
+        message.salt = "ABCD";
+        rawSocket.write(message.serialize());
     }
 
 }

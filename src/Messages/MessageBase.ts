@@ -1,5 +1,5 @@
 import { IServer } from "../Server";
-import { Socket } from "net";
+import { IClient } from "../Client";
 
 export interface IMessageBase {
 
@@ -13,5 +13,5 @@ export interface IMessageHandler {
 
     readonly serverRef : IServer;
     readonly messageId : number;
-    handle(buffer : Buffer, mySocket: Socket) : boolean;
+    handle(buffer : Buffer, mySocket: IClient) : boolean;
 }

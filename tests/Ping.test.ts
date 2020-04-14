@@ -2,6 +2,7 @@
 import { expect } from "chai";
 import { PingHandler, Ping } from "../src/Messages/Ping";
 import { ServerMock } from "./Mocks/ServerMock";
+import { ClientMock } from "./Mocks/ClientMock";
 import { SocketMock } from "./Mocks/SocketMock";
 
 function getRandomInt(max : number) {
@@ -23,20 +24,20 @@ function setupIncommingPing(good : boolean) : Buffer {
 describe("Ping Handler", () => {
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let mySocket : SocketMock = new SocketMock();
+        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
         let handler : PingHandler = new PingHandler(server, 1);
 
-        expect(handler.handle(setupIncommingPing(true), mySocket)).to.be.true;
+        expect(handler.handle(setupIncommingPing(true), myClient)).to.be.true;
 
         done();
     });
 
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let mySocket : SocketMock = new SocketMock();
+        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
         let handler : PingHandler = new PingHandler(server, 1);
 
-        expect(handler.handle(setupIncommingPing(false), mySocket)).to.be.false;
+        expect(handler.handle(setupIncommingPing(false), myClient)).to.be.false;
 
         done();
     });

@@ -1,7 +1,7 @@
 /// TODO : Rename this to SetVisibleUsername
 import { IMessageBase, IMessageHandler } from "./MessageBase";
 import { IServer } from "../Server";
-import { Socket } from "net";
+import { IClient } from "../Client";
 
 const size = 0;
 
@@ -48,7 +48,7 @@ export class SetVisibleUsernameHandler implements IMessageHandler {
 
     }
 
-    handle(buffer: Buffer, mySocket: Socket): boolean {
+    handle(buffer: Buffer, myClient: IClient): boolean {
         let message : SetVisibleUsername = new SetVisibleUsername(this.messageId, buffer);
 
         if (message.valid) {

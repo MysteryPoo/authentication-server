@@ -1,7 +1,7 @@
 /// TODO : Rename to AddRemoveFriend
 import { IMessageBase, IMessageHandler } from "./MessageBase";
 import { IServer } from "../Server";
-import { Socket } from "net";
+import { IClient } from "../Client";
 import { ObjectId } from "mongodb";
 
 const size = 8;
@@ -70,7 +70,7 @@ export class AddRemoveFriendHandler implements IMessageHandler {
 
     }
 
-    public handle(buffer : Buffer, mySocket : Socket): boolean {
+    public handle(buffer : Buffer, myClient : IClient): boolean {
         let message : AddRemoveFriend = new AddRemoveFriend(this.messageId, buffer);
 
         if (message.valid) {

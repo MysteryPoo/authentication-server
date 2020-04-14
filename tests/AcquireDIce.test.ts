@@ -2,6 +2,7 @@
 import { expect } from "chai";
 import { GetDiceURL, GetDiceURLHandler } from "../src/Messages/AcquireDice";
 import { ServerMock } from "./Mocks/ServerMock";
+import { ClientMock } from "./Mocks/ClientMock";
 import { SocketMock } from "./Mocks/SocketMock";
 import { ObjectId } from "mongodb";
 
@@ -83,20 +84,20 @@ describe("GetDiceURL Handler", () => {
 
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let mySocket : SocketMock = new SocketMock();
+        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
         let handler : GetDiceURLHandler = new GetDiceURLHandler(server, 1);
 
-        expect(handler.handle(setupIncomingMessage(true), mySocket)).to.be.true;
+        expect(handler.handle(setupIncomingMessage(true), myClient)).to.be.true;
 
         done();
     });
 
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let mySocket : SocketMock = new SocketMock();
+        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
         let handler : GetDiceURLHandler = new GetDiceURLHandler(server, 1);
 
-        expect(handler.handle(setupIncomingMessage(false), mySocket)).to.be.false;
+        expect(handler.handle(setupIncomingMessage(false), myClient)).to.be.false;
 
         done();
     });

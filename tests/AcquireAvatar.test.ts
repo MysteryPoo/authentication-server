@@ -2,8 +2,9 @@
 import { expect } from "chai";
 import { GetAvatarURLHandler, GetAvatarURL } from "../src/Messages/AcquireAvatar";
 import { ServerMock } from "./Mocks/ServerMock";
-import { SocketMock } from "./Mocks/SocketMock";
+import { ClientMock } from "./Mocks/ClientMock";
 import { ObjectId } from "mongodb";
+import { SocketMock } from "./Mocks/SocketMock";
 
 function getRandomInt(max : number) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -81,20 +82,20 @@ describe("AcquireAvatar Handler", () => {
 
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let mySocket : SocketMock = new SocketMock();
+        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
         let handler : GetAvatarURLHandler = new GetAvatarURLHandler(server, 1);
 
-        expect(handler.handle(setupIncomingMessage(true), mySocket)).to.be.true;
+        expect(handler.handle(setupIncomingMessage(true), myClient)).to.be.true;
 
         done();
     });
 
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let mySocket : SocketMock = new SocketMock();
+        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
         let handler : GetAvatarURLHandler = new GetAvatarURLHandler(server, 1);
 
-        expect(handler.handle(setupIncomingMessage(false), mySocket)).to.be.false;
+        expect(handler.handle(setupIncomingMessage(false), myClient)).to.be.false;
 
         done();
     });

@@ -1,13 +1,23 @@
 
 import { Socket } from "net";
 import { IServer, MESSAGE_ID } from "./Server";
+import { v4 as uuid } from "uuid";
 
-export class Client {
+export interface IClient {
+    uid : string;
+    authenticated : boolean;
 
-    public uid : number = 0;
+    write(buffer : Buffer) : boolean;
+}
+
+export class Client extends Socket implements IClient {
+
+    public uid : string = uuid();
+    public authenticated : boolean = false;
 
     constructor(private socket : Socket, private serverRef : IServer) {
-        
+        super();
+
         this.socket.on('data', (data : Buffer) => {
             let tell : number = 0;
             let success : boolean = false;
@@ -15,7 +25,7 @@ export class Client {
                 let messageType : MESSAGE_ID = data.readUInt8(tell);
                 let messageSize : number = data.readUInt32LE(tell + 1);
                 let messageData : Buffer = data.slice(tell + 5, tell + messageSize);
-                success = success && this.serverRef.handlerList[messageType].handle(messageData, socket);
+                success = success && this.serverRef.handlerList[messageType].handle(messageData, this);
                 tell += messageSize;
             }
             console.log(data);
