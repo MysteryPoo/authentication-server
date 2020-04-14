@@ -12,11 +12,11 @@ function getRandomInt(max : number) {
 function setupIncommingPing(good : boolean) : Buffer {
     var incommingPing : Buffer;
     if (good) {
-        incommingPing = Buffer.allocUnsafe(4);
+        incommingPing = Buffer.allocUnsafe(8);
     } else {
         incommingPing = Buffer.allocUnsafe(32);
     }
-    incommingPing.writeUInt32LE(1234, 0);
+    incommingPing.writeBigUInt64LE(BigInt(1234), 0);
 
     return incommingPing;
 }
@@ -63,12 +63,12 @@ describe("Ping Message", () => {
     it("should serialize into a valid buffer", (done) => {
         // Setup truth
         let messageId : number = getRandomInt(255);
-        let expectedSize : number = 9;
-        let timeValue : number = getRandomInt(65535);
+        let expectedSize : number = 13;
+        let timeValue : bigint = BigInt(getRandomInt(65535));
         let truth : Buffer = Buffer.allocUnsafe(expectedSize);
         truth.writeUInt8(messageId, 0);
         truth.writeUInt32LE(expectedSize, 1);
-        truth.writeUInt32LE(timeValue, 5);
+        truth.writeBigUInt64LE(timeValue, 5);
 
         // Instatiate test instance
         let ping : Ping = new Ping(messageId);
@@ -82,9 +82,9 @@ describe("Ping Message", () => {
 
     it("should deserialize to a valid time value if valid buffer received", (done) => {
         // Setup truth
-        let timeValue : number = getRandomInt(65535);
-        let truth : Buffer = Buffer.allocUnsafe(4);
-        truth.writeUInt32LE(timeValue, 0);
+        let timeValue : bigint = BigInt(getRandomInt(65535));
+        let truth : Buffer = Buffer.allocUnsafe(8);
+        truth.writeBigUInt64LE(timeValue, 0);
 
         let ping : Ping = new Ping(1);
         expect(ping.valid).to.be.false;

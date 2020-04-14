@@ -5,6 +5,7 @@ import { IMessageHandler } from "./Messages/MessageBase";
 import { AuthenticationChallenge } from "./Messages/Challenge";
 import { GetAvatarURLHandler } from "./Messages/AcquireAvatar";
 import { PingHandler } from "./Messages/Ping";
+import { HandshakeHandler } from "./Messages/Handshake";
 
 export interface IServer {
     socketList : Array<Client>;
@@ -13,11 +14,12 @@ export interface IServer {
 
 export enum MESSAGE_ID {
     FIRST,
-    "AcquireAvatar" = FIRST,
-    "AcquireDice",
-    "Challenge",
-    "MessageBase",
+    "Challenge" = FIRST,
+    "Handshake",
     "Ping",
+    "AcquireAvatar",
+    "AcquireDice",
+    "MessageBase",
     "SetUsername",
     LAST = MESSAGE_ID.SetUsername
 };
@@ -31,8 +33,10 @@ export class Server extends netServer implements IServer {
 
     constructor() {
         super();
+        this.handlerList[MESSAGE_ID.Handshake] = new HandshakeHandler(this, MESSAGE_ID.Handshake);
         this.handlerList[MESSAGE_ID.AcquireAvatar] = new GetAvatarURLHandler(this, MESSAGE_ID.AcquireAvatar);
         this.handlerList[MESSAGE_ID.Ping] = new PingHandler(this, MESSAGE_ID.Ping);
+        
         this.on('connection', this.onConnection);
         this.on('close', () => {
             this.socketList = [];
@@ -64,12 +68,12 @@ export class Server extends netServer implements IServer {
     }
 
     private onConnection( rawSocket : Socket) {
-        const socket = new Client(rawSocket, this);
-        this.socketList.push(socket);
+        const client = new Client(rawSocket, this);
+        this.socketList.push(client);
 
         let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
         message.salt = "ABCD";
-        rawSocket.write(message.serialize());
+        client.write(message.serialize());
     }
 
 }

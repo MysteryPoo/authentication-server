@@ -5,4 +5,8 @@ export class SocketMock {
         return true;
     }
 
+    public destroy() : void {
+        
+    }
+
 }

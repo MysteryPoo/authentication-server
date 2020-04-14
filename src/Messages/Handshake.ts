@@ -1,9 +1,10 @@
 
 import { IMessageBase, IMessageHandler } from "./MessageBase";
 import { IServer } from "../Server";
-import { Socket } from "net";
-import { Client, IClient } from "../Client";
+import { IClient } from "../Client";
 import { ObjectId } from "mongodb";
+import UserModel, { IUser, IUserModel } from "../Models/User.model";
+import { DocumentQuery } from "mongoose";
 
 const size = 0;
 
@@ -99,9 +100,35 @@ export class HandshakeHandler implements IMessageHandler {
 
     handle(buffer: Buffer, myClient: IClient): boolean {
         let message : Handshake = new Handshake(this.messageId, buffer);
+        console.debug(`Received a ${message.valid ? "valid" : "invalid"} Handshake: ${buffer}`);
 
         if (message.valid && !myClient.authenticated) {
-            
+            if (message.id == new ObjectId("0")) {
+                // New User
+                let newUser : Promise<IUser> = new UserModel().save();
+                newUser.then( (user : IUser) => {
+
+                }).catch( err => {
+                    let response : Handshake = new Handshake(this.messageId);
+                    response.id = new ObjectId("0");
+                    response.device_uuid = "0";
+                    response.username = err.toString();
+                    response.lastLogin = new Date(0);
+                    myClient.write(response.serialize());
+
+                    let index = this.serverRef.socketList.findIndex( (element) => {
+                        return element.uid === myClient.uid;
+                    });
+                    if (index != -1) {
+                        this.serverRef.socketList.splice(index, 1);
+                    }
+                    myClient.destroy();
+                });
+            } else {
+                UserModel.findById(message.id).exec( (user : IUser) => {
+
+                });
+            }
             return true;
         } else {
             let index = this.serverRef.socketList.findIndex( (element) => {
