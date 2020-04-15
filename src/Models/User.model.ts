@@ -1,5 +1,6 @@
 
 import { Document, Model, model, Types, Schema } from "mongoose";
+import { v4 as uuid} from "uuid";
 
 // Schema
 const UserSchema : Schema = new Schema({
@@ -37,7 +38,8 @@ const UserSchema : Schema = new Schema({
     isAdmin: Boolean,
     device_uuid: {
         type: String,
-        required: false
+        required: false,
+        default: uuid()
     },
     experience: Number,
     level: Number,

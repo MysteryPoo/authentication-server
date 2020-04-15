@@ -25,7 +25,9 @@ export class Client implements IClient {
                 let messageType : MESSAGE_ID = data.readUInt8(tell);
                 let messageSize : number = data.readUInt32LE(tell + 1);
                 let messageData : Buffer = data.slice(tell + 5, tell + messageSize);
-                this.serverRef.handlerList[messageType].handle(messageData, this);
+                if (this.serverRef.handlerList[messageType]) {
+                    this.serverRef.handlerList[messageType].handle(messageData, this);
+                }
                 tell += messageSize;
             }
             //console.log(data);
