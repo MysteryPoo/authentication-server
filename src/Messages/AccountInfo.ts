@@ -1,7 +1,9 @@
 /// TODO : Rename this to SetVisibleUsername
 import { IMessageBase, IMessageHandler } from "./MessageBase";
-import { IServer } from "../Server";
+import { IServer, MESSAGE_ID } from "../Server";
 import { IClient } from "../Client";
+import UserModel, { IUser } from "../Models/User.model";
+import { Handshake } from "./Handshake";
 
 const size = 0;
 
@@ -52,7 +54,23 @@ export class SetVisibleUsernameHandler implements IMessageHandler {
         let message : SetVisibleUsername = new SetVisibleUsername(this.messageId, buffer);
 
         if (message.valid) {
-            // TODO : Implement this
+            if (myClient.authenticated) {
+                UserModel.findById(myClient.uid).exec( (err, user : IUser) => {
+                    if (err) console.error(err);
+
+                    user.username = message.username;
+
+                    user.save();
+
+                    let hs : Handshake = new Handshake(MESSAGE_ID.Handshake);
+                    hs.id = user.id;
+                    hs.username = user.username;
+                    hs.device_uuid = user.device_uuid;
+                    hs.lastLogin = user.last_login;
+
+                    myClient.write(hs.serialize());
+                });
+            }
             return true;
         } else {
             return false;

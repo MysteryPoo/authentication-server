@@ -101,6 +101,8 @@ export class HandshakeHandler implements IMessageHandler {
     handle(buffer: Buffer, myClient: IClient): boolean {
         let message : Handshake = new Handshake(this.messageId, buffer);
 
+        let disconnect = false;
+
         if (message.valid && !myClient.authenticated) {
             if (message.id === "0") {
                 // New User
@@ -119,6 +121,10 @@ export class HandshakeHandler implements IMessageHandler {
                     user.password = crypto.createHmac('sha1', user.salt).update(user.password).digest('hex');
                     user.save();
 
+                    this.serverRef.socketMap.set(user.id, myClient);
+                    this.serverRef.socketMap.delete(myClient.uid);
+                    myClient.uid = user.id;
+
                     myClient.write(response.serialize());
                 }).catch( err => {
                     let response : Handshake = new Handshake(this.messageId);
@@ -128,13 +134,7 @@ export class HandshakeHandler implements IMessageHandler {
                     response.lastLogin = new Date(0);
                     myClient.write(response.serialize());
 
-                    let index = this.serverRef.socketList.findIndex( (element) => {
-                        return element.uid === myClient.uid;
-                    });
-                    if (index != -1) {
-                        this.serverRef.socketList.splice(index, 1);
-                    }
-                    myClient.destroy();
+                    disconnect = true;
                 });
             } else {
                 let dbId = new ObjectId(message.id);
@@ -154,19 +154,28 @@ export class HandshakeHandler implements IMessageHandler {
 
                         user.last_login = new Date();
                         user.save();
+
+                        this.serverRef.socketMap.set(user.id, myClient);
+                        this.serverRef.socketMap.delete(myClient.uid);
+                        myClient.uid = user.id;
                     } else {
                         response.id = "0";
                         response.username = "Invalid password.";
                         response.device_uuid = "0";
                         response.lastLogin = new Date(0);
+
+                        disconnect = true;
                     }
 
                     myClient.write(response.serialize());
                     
                 });
             }
-            return true;
         } else {
+            disconnect = true;
+        }
+
+        if (disconnect) {
             let index = this.serverRef.socketList.findIndex( (element) => {
                 return element.uid === myClient.uid;
             });
@@ -175,6 +184,8 @@ export class HandshakeHandler implements IMessageHandler {
             }
             return false;
         }
+
+        return true;
     }
 
 

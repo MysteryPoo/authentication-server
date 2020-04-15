@@ -1,14 +1,16 @@
 
 import { Socket, Server as netServer } from "net";
-import { Client } from "./Client";
+import { Client, IClient } from "./Client";
 import { IMessageHandler } from "./Messages/MessageBase";
 import { AuthenticationChallenge } from "./Messages/Challenge";
 import { GetAvatarURLHandler } from "./Messages/AcquireAvatar";
 import { PingHandler } from "./Messages/Ping";
 import { HandshakeHandler } from "./Messages/Handshake";
+import { SetVisibleUsernameHandler } from "./Messages/AccountInfo";
 
 export interface IServer {
     socketList : Array<Client>;
+    socketMap : Map<string, IClient>;
     handlerList : Array<IMessageHandler>;
 }
 
@@ -20,13 +22,17 @@ export enum MESSAGE_ID {
     "AcquireAvatar",
     "AcquireDice",
     "MessageBase",
-    "SetUsername",
-    LAST = MESSAGE_ID.SetUsername
+    "Filler3",
+    "Filler1",
+    "Filler2",
+    "SetVisibleUsername",
+    LAST = MESSAGE_ID.SetVisibleUsername
 };
 
 export class Server extends netServer implements IServer {
 
     socketList : Array<Client> = [];
+    socketMap : Map<string, IClient> = new Map();
     handlerList : Array<IMessageHandler> = [];
 
     private port : number = 0;
@@ -36,10 +42,12 @@ export class Server extends netServer implements IServer {
         this.handlerList[MESSAGE_ID.Handshake] = new HandshakeHandler(this, MESSAGE_ID.Handshake);
         this.handlerList[MESSAGE_ID.AcquireAvatar] = new GetAvatarURLHandler(this, MESSAGE_ID.AcquireAvatar);
         this.handlerList[MESSAGE_ID.Ping] = new PingHandler(this, MESSAGE_ID.Ping);
+        this.handlerList[MESSAGE_ID.SetVisibleUsername] = new SetVisibleUsernameHandler(this, MESSAGE_ID.SetVisibleUsername);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {
             this.socketList = [];
+            this.socketMap.clear();
             console.log("Server no longer listening...");
         });
         this.on('listening', () => {
@@ -70,6 +78,7 @@ export class Server extends netServer implements IServer {
     private onConnection( rawSocket : Socket) {
         const client = new Client(rawSocket, this);
         this.socketList.push(client);
+        this.socketMap.set(client.uid, client);
 
         let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
         message.salt = "ABCD";
