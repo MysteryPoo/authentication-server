@@ -8,6 +8,10 @@ const UserSchema : Schema = new Schema({
         type: String,
         required: true
     },
+    salt: {
+        type: String,
+        required: true
+    },
     username: {
         type: String,
         required: true,
@@ -60,6 +64,7 @@ const UserSchema : Schema = new Schema({
 // Interface
 interface IUserSchema extends Document {
     password : string,
+    salt : string,
     username : string,
     avatarUri : string,
     diceUri? : string,

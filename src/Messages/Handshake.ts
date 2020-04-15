@@ -5,8 +5,7 @@ import { IClient } from "../Client";
 import UserModel, { IUser } from "../Models/User.model";
 import { ObjectId } from "mongodb";
 import { v4 as uuid } from "uuid";
-
-const size = 0;
+import crypto from "crypto";
 
 export class Handshake implements IMessageBase {
 
@@ -15,7 +14,8 @@ export class Handshake implements IMessageBase {
     public id : string = "";
     public device_uuid : string = "";
     public username : string = "";
-    public passHash : string = "";
+    public password : string = "";
+    public salt : string = "";
     public lastLogin : Date = new Date();
     public operatingSystem : string = "";
     public protocolVersion : number = 0;
@@ -29,14 +29,14 @@ export class Handshake implements IMessageBase {
 
     serialize() : Buffer {
         // TODO : Clean this up
-        let idLength = Buffer.byteLength(this.id, 'utf8');
-        let device_uuid = this.device_uuid;
-        let device_uuidLength = Buffer.byteLength(device_uuid, 'utf8');
-        let username = this.username;
-        let usernameLength = Buffer.byteLength(username, 'utf8');
-        let lastLogin = this.lastLogin.getTime() === new Date(0).getTime() ? "0" : this.lastLogin.toString();
-        let lastLoginLength = Buffer.byteLength(lastLogin, 'utf8');
-        
+        let idLength : number = Buffer.byteLength(this.id, 'utf8');
+        let device_uuid : string = this.device_uuid;
+        let device_uuidLength : number = Buffer.byteLength(device_uuid, 'utf8');
+        let username :string = this.username;
+        let usernameLength : number = Buffer.byteLength(username, 'utf8');
+        let lastLogin : string = this.lastLogin.getTime() === new Date(0).getTime() ? "0" : this.lastLogin.toString();
+        let lastLoginLength : number = Buffer.byteLength(lastLogin, 'utf8');
+
         let responseSize = 9 + idLength + device_uuidLength + usernameLength + lastLoginLength;
         let response = Buffer.allocUnsafe(responseSize);
         let bufferTell = 0;
@@ -62,8 +62,8 @@ export class Handshake implements IMessageBase {
 	
             let idLength = buffer.readUInt8(bufferTell); bufferTell += 1;
             let id = buffer.toString('utf8', bufferTell, bufferTell + idLength); bufferTell += idLength;
-            let hashLength = buffer.readUInt8(bufferTell); bufferTell += 1;
-            let hash = buffer.toString('utf8', bufferTell, bufferTell + hashLength); bufferTell += hashLength;
+            let passLength = buffer.readUInt8(bufferTell); bufferTell += 1;
+            let password = buffer.toString('utf8', bufferTell, bufferTell + passLength); bufferTell += passLength;
             let uuidDeviceLength = buffer.readUInt8(bufferTell); bufferTell += 1;
             let uuidDevice = buffer.toString('utf8', bufferTell, bufferTell + uuidDeviceLength); bufferTell += uuidDeviceLength;
             //let osLength = buffer.readUInt8(bufferTell); bufferTell += 1;
@@ -71,14 +71,14 @@ export class Handshake implements IMessageBase {
             let protocolVersion = buffer.readUInt8(bufferTell); bufferTell += 1;
             let gameVersion = buffer.readUInt8(bufferTell); bufferTell += 1;
 
-            const bufferSize = 5 + idLength + hashLength + uuidDeviceLength;
+            const bufferSize = 5 + idLength + passLength + uuidDeviceLength;
 
             if(buffer.length != bufferSize) {
                 throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
             }
             
             this.id = id;
-            this.passHash = hash;
+            this.password = password;
             this.device_uuid = uuidDevice;
             //this.operatingSystem = os;
             this.protocolVersion = protocolVersion;
@@ -107,13 +107,17 @@ export class HandshakeHandler implements IMessageHandler {
                 new UserModel({
                     id: new ObjectId(),
                     username: "NewUser_" + uuid(),
-                    password: message.passHash
+                    password: message.password,
+                    salt: crypto.randomBytes(4).toString('hex')
                 }).save().then( (user : IUser) => {
                     let response : Handshake = new Handshake(this.messageId);
                     response.id = user.id;
                     response.username = user.username;
                     response.device_uuid = user.device_uuid;
                     response.lastLogin = new Date();
+
+                    user.password = crypto.createHmac('sha1', user.salt).update(user.password).digest('hex');
+                    user.save();
 
                     myClient.write(response.serialize());
                 }).catch( err => {
@@ -137,9 +141,10 @@ export class HandshakeHandler implements IMessageHandler {
                 UserModel.findById(dbId).exec( (err, user : IUser) => {
                     if (err) console.error(err);
 
-                    let response : Handshake = new Handshake(this.messageId);
+                    let passHash = crypto.createHmac('sha1', user.salt).update(message.password).digest('hex');
 
-                    if (message.passHash == user.password) {
+                    let response : Handshake = new Handshake(this.messageId);
+                    if (user.password === passHash) {
                         response.id = user.id;
                         response.username = user.username;
                         response.device_uuid = user.device_uuid;
