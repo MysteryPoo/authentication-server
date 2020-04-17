@@ -6,7 +6,7 @@ import { IClient } from "./Interfaces/IClient";
 import { IMessageHandler } from "./Interfaces/IMessageHandler";
 import { AuthenticationChallenge } from "./Messages/GameClientInterface/Challenge";
 import { GetAvatarURLHandler } from "./Messages/GameClientInterface/AcquireAvatar";
-import { PingHandler } from "./Messages/Ping";
+import { PingHandler } from "./Messages/Common/Ping";
 import { HandshakeHandler } from "./Messages/GameClientInterface/Handshake";
 import { SetVisibleUsernameHandler } from "./Messages/GameClientInterface/AccountInfo";
 
@@ -28,7 +28,6 @@ export enum MESSAGE_ID {
 
 export class UserServer extends netServer implements IServer {
 
-    socketList : Array<Client> = [];
     socketMap : Map<string, IClient> = new Map();
     handlerList : Array<IMessageHandler> = [];
 
@@ -36,14 +35,13 @@ export class UserServer extends netServer implements IServer {
 
     constructor() {
         super();
-        this.handlerList[MESSAGE_ID.Handshake] = new HandshakeHandler(this, MESSAGE_ID.Handshake);
-        this.handlerList[MESSAGE_ID.AcquireAvatar] = new GetAvatarURLHandler(this, MESSAGE_ID.AcquireAvatar);
-        this.handlerList[MESSAGE_ID.Ping] = new PingHandler(this, MESSAGE_ID.Ping);
-        this.handlerList[MESSAGE_ID.SetVisibleUsername] = new SetVisibleUsernameHandler(this, MESSAGE_ID.SetVisibleUsername);
+        this.registerHandler<HandshakeHandler>(MESSAGE_ID.Handshake, HandshakeHandler);
+        this.registerHandler<GetAvatarURLHandler>(MESSAGE_ID.AcquireAvatar, GetAvatarURLHandler);
+        this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);
+        this.registerHandler<SetVisibleUsernameHandler>(MESSAGE_ID.SetVisibleUsername, SetVisibleUsernameHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {
-            this.socketList = [];
             this.socketMap.clear();
             console.log("Server no longer listening...");
         });
@@ -74,12 +72,20 @@ export class UserServer extends netServer implements IServer {
 
     private onConnection( rawSocket : Socket) {
         const client = new Client(rawSocket, this);
-        this.socketList.push(client);
         this.socketMap.set(client.uid, client);
 
         let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
         message.salt = "ABCD";
         client.write(message.serialize());
+    }
+
+    public removeClient(client : IClient) : void {
+        this.socketMap.delete(client.uid);
+        client.destroy();
+    }
+
+    private registerHandler<T extends IMessageHandler>(messageId : MESSAGE_ID, handler : {new(serverRef : IServer, messageId : MESSAGE_ID) : T; }) {
+        this.handlerList[messageId] = new handler(this, messageId);
     }
 
 }

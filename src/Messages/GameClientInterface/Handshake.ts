@@ -177,15 +177,7 @@ export class HandshakeHandler implements IMessageHandler {
         }
 
         if (disconnect) {
-            let index = this.serverRef.socketList.findIndex( (element) => {
-                return element.uid === myClient.uid;
-            });
-            if (index != -1) {
-                this.serverRef.socketList.splice(index, 1);
-            }
-
-            this.serverRef.socketMap.delete(myClient.uid);
-            myClient.destroy();
+            this.serverRef.removeClient(myClient);
             return false;
         }
 

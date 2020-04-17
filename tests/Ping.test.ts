@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { PingHandler, Ping } from "../src/Messages/Ping";
+import { PingHandler, Ping } from "../src/Messages/Common/Ping";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { SocketMock } from "./Mocks/SocketMock";

@@ -1,7 +1,7 @@
 
 import { config } from "dotenv";
 import { UserServer } from "./UserServer";
-import { GameServerManager } from "./GameServerServer";
+import { GameServerServer } from "./GameServerServer";
 import mongoose from "mongoose";
 
 config();
@@ -19,5 +19,5 @@ db.once('open', function() {
 const server : UserServer = new UserServer();
 server.start(gameClientPort);
 
-const gameServerManager : GameServerManager = new GameServerManager();
+const gameServerManager : GameServerServer = new GameServerServer();
 

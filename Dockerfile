@@ -14,3 +14,4 @@ RUN npm install
 CMD ["npm", "start"]
 
 EXPOSE 9000
+EXPOSE 9001
