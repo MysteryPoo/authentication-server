@@ -1,7 +1,8 @@
 
-import { IMessageBase, IMessageHandler } from "./MessageBase";
-import { IServer } from "../Server";
-import { IClient } from "../Client";
+import { IMessageBase } from "../Interfaces/IMessageBase";
+import { IMessageHandler } from "../Interfaces/IMessageHandler";
+import { IServer } from "../Interfaces/IServer";
+import { IClient } from "../Interfaces/IClient";
 
 const size : number = 13;
 

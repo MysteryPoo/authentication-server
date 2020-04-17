@@ -1,8 +1,10 @@
 /// TODO : Rename this to SetVisibleUsername
-import { IMessageBase, IMessageHandler } from "./MessageBase";
-import { IServer, MESSAGE_ID } from "../Server";
-import { IClient } from "../Client";
-import UserModel, { IUser } from "../Models/User.model";
+import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { IMessageHandler } from "../../Interfaces/IMessageHandler";
+import { MESSAGE_ID } from "../../UserServer";
+import { IServer } from "../../Interfaces/IServer";
+import { IClient } from "../../Interfaces/IClient";
+import UserModel, { IUser } from "../../Models/User.model";
 import { Handshake } from "./Handshake";
 
 const size = 0;

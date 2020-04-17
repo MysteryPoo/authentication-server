@@ -1,6 +1,6 @@
 
-import { IClient } from "../../src/Client";
-import { IServer } from "../../src/Server";
+import { IClient } from "../../src/Interfaces/IClient";
+import { IServer } from "../../src/Interfaces/IServer";
 import { SocketMock } from "./SocketMock";
 import { v4 as uuid } from "uuid";
 

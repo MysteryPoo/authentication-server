@@ -1,15 +1,9 @@
 
 import { Socket } from "net";
-import { IServer, MESSAGE_ID } from "./Server";
+import { IServer } from "./Interfaces/IServer";
 import { v4 as uuid } from "uuid";
-
-export interface IClient {
-    uid : string;
-    authenticated : boolean;
-
-    write(buffer : Buffer) : boolean;
-    destroy() : void;
-}
+import { IClient } from "./Interfaces/IClient";
+import { MESSAGE_ID } from "./UserServer";
 
 export class Client implements IClient {
 
@@ -32,6 +26,20 @@ export class Client implements IClient {
             }
             //console.log(data);
             return success;
+        })
+        .on('close', (had_error) => {
+            if (had_error) {
+                console.error("Unknown error ocurred when client disconnected.");
+            } else {
+                console.debug(`Console: Socket has closed.`);
+            }
+            // TODO : Remove from Lobby and Queue
+
+            // TODO : Notify friends
+
+            // Delete
+            this.serverRef.socketMap.delete(this.uid);
+            this.destroy();
         });
     }
 
@@ -41,6 +49,7 @@ export class Client implements IClient {
 
     public destroy() : void {
         this.socket.destroy();
+        this.socket.unref();
     }
 
 }

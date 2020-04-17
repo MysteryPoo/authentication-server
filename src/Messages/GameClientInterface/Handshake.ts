@@ -1,8 +1,9 @@
 
-import { IMessageBase, IMessageHandler } from "./MessageBase";
-import { IServer } from "../Server";
-import { IClient } from "../Client";
-import UserModel, { IUser } from "../Models/User.model";
+import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { IMessageHandler } from "../../Interfaces/IMessageHandler";
+import { IServer } from "../../Interfaces/IServer";
+import { IClient } from "../../Interfaces/IClient";
+import UserModel, { IUser } from "../../Models/User.model";
 import { ObjectId } from "mongodb";
 import { v4 as uuid } from "uuid";
 import crypto from "crypto";
@@ -182,6 +183,9 @@ export class HandshakeHandler implements IMessageHandler {
             if (index != -1) {
                 this.serverRef.socketList.splice(index, 1);
             }
+
+            this.serverRef.socketMap.delete(myClient.uid);
+            myClient.destroy();
             return false;
         }
 

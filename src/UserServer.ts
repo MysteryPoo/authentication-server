@@ -1,18 +1,14 @@
 
+import { IServer } from "./Interfaces/IServer";
 import { Socket, Server as netServer } from "net";
-import { Client, IClient } from "./Client";
-import { IMessageHandler } from "./Messages/MessageBase";
-import { AuthenticationChallenge } from "./Messages/Challenge";
-import { GetAvatarURLHandler } from "./Messages/AcquireAvatar";
+import { Client } from "./Client";
+import { IClient } from "./Interfaces/IClient";
+import { IMessageHandler } from "./Interfaces/IMessageHandler";
+import { AuthenticationChallenge } from "./Messages/GameClientInterface/Challenge";
+import { GetAvatarURLHandler } from "./Messages/GameClientInterface/AcquireAvatar";
 import { PingHandler } from "./Messages/Ping";
-import { HandshakeHandler } from "./Messages/Handshake";
-import { SetVisibleUsernameHandler } from "./Messages/AccountInfo";
-
-export interface IServer {
-    socketList : Array<Client>;
-    socketMap : Map<string, IClient>;
-    handlerList : Array<IMessageHandler>;
-}
+import { HandshakeHandler } from "./Messages/GameClientInterface/Handshake";
+import { SetVisibleUsernameHandler } from "./Messages/GameClientInterface/AccountInfo";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -26,10 +22,11 @@ export enum MESSAGE_ID {
     "Filler1",
     "Filler2",
     "SetVisibleUsername",
-    LAST = MESSAGE_ID.SetVisibleUsername
+    INVALID,
+    LAST = INVALID
 };
 
-export class Server extends netServer implements IServer {
+export class UserServer extends netServer implements IServer {
 
     socketList : Array<Client> = [];
     socketMap : Map<string, IClient> = new Map();

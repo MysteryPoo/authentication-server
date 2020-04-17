@@ -1,5 +1,5 @@
 /// TODO : Rename to AuthenticationChallenge
-import { IMessageBase } from "./MessageBase";
+import { IMessageBase } from "../../Interfaces/IMessageBase";
 
 const size = 6;
 

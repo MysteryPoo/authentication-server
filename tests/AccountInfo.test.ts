@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { SetVisibleUsername, SetVisibleUsernameHandler } from "../src/Messages/AccountInfo";
+import { SetVisibleUsername, SetVisibleUsernameHandler } from "../src/Messages/GameClientInterface/AccountInfo";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { SocketMock } from "./Mocks/SocketMock";

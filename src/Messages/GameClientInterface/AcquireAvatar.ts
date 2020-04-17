@@ -1,13 +1,14 @@
-/// TODO : Rename to GetDiceURL
-import { IMessageBase, IMessageHandler } from "./MessageBase";
-import { IServer } from "../Server";
-import { IClient } from "../Client";
+/// TODO : Rename to GetAvatarURL
+import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { IMessageHandler } from "../../Interfaces/IMessageHandler";
+import { IServer } from "../../Interfaces/IServer";
+import { IClient } from "../../Interfaces/IClient";
 import { ObjectId } from "mongodb";
 
 const size : number = 6;
 
-export class GetDiceURL implements IMessageBase {
-    
+export class GetAvatarURL implements IMessageBase {
+
     valid : boolean = false;
 
     public url : string = "";
@@ -50,14 +51,14 @@ export class GetDiceURL implements IMessageBase {
     }
 }
 
-export class GetDiceURLHandler implements IMessageHandler {
+export class GetAvatarURLHandler implements IMessageHandler {
     
     constructor(readonly serverRef: IServer, readonly messageId: number) {
 
     }
 
     public handle(buffer : Buffer, myClient : IClient): boolean {
-        let message : GetDiceURL = new GetDiceURL(this.messageId, buffer);
+        let message : GetAvatarURL = new GetAvatarURL(this.messageId, buffer);
 
         if (message.valid) {
             // TODO : Implement this

@@ -91,7 +91,7 @@ interface IUserSchema extends Document {
 }
 
 interface IUserBase extends IUserSchema {
-
+    
 }
 
 export interface IUser extends IUserBase {

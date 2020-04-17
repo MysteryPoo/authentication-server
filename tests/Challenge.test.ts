@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { AuthenticationChallenge } from "../src/Messages/Challenge";
+import { AuthenticationChallenge } from "../src/Messages/GameClientInterface/Challenge";
 
 function getRandomInt(max : number) {
     return Math.floor(Math.random() * Math.floor(max));
