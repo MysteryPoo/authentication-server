@@ -8,6 +8,8 @@ export class ClientMock implements IClient {
     
     public uid: string = uuid();
     public authenticated: boolean = false;
+    public isReady : boolean = false;
+    public gameVersion : number = 0;
 
     constructor(private socket : SocketMock, private serverRef : IServer) {
         

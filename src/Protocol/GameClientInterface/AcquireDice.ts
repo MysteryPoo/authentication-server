@@ -1,5 +1,5 @@
 /// TODO : Rename to GetDiceURL
-import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { MessageBase } from "../Common/MessageBase";
 import { IMessageHandler } from "../../Interfaces/IMessageHandler";
 import { IServer } from "../../Interfaces/IServer";
 import { IClient } from "../../Interfaces/IClient";
@@ -7,18 +7,10 @@ import { ObjectId } from "mongodb";
 
 const size : number = 6;
 
-export class GetDiceURL implements IMessageBase {
-    
-    valid : boolean = false;
+export class GetDiceURL extends MessageBase {
 
     public url : string = "";
     public id : ObjectId = new ObjectId();
-
-    constructor(protected messageId : number, buffer?: Buffer) {
-        if (buffer) {
-            this.deserialize(buffer);
-        }
-    }
 
     public serialize() : Buffer {
         let urlLength : number = Buffer.byteLength(this.url, 'utf8');

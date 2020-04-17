@@ -1,17 +1,11 @@
 /// TODO : Rename to AuthenticationChallenge
-import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { MessageBase } from "../Common/MessageBase";
 
 const size = 6;
 
-export class AuthenticationChallenge implements IMessageBase {
-    
-    valid : boolean = false;
+export class AuthenticationChallenge extends MessageBase {
 
     public salt : string = "";
-
-    constructor(protected messageId: number) {
-
-    }
     
     serialize(): Buffer {
         let saltLength : number = Buffer.byteLength(this.salt, 'utf-8');

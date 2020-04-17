@@ -1,5 +1,5 @@
 /// TODO : Rename this to SetVisibleUsername
-import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { MessageBase } from "../Common/MessageBase";
 import { IMessageHandler } from "../../Interfaces/IMessageHandler";
 import { MESSAGE_ID } from "../../UserServer";
 import { IServer } from "../../Interfaces/IServer";
@@ -9,17 +9,9 @@ import { Handshake } from "./Handshake";
 
 const size = 0;
 
-export class SetVisibleUsername implements IMessageBase {
-    
-    valid : boolean = false;
+export class SetVisibleUsername extends MessageBase {
 
     public username : string = "";
-
-    constructor(protected messageId : number, buffer? : Buffer) {
-        if (buffer) {
-            this.deserialize(buffer);
-        }
-    }
 
     serialize(): Buffer {
         // TODO : Implement this with an error code for the client to process

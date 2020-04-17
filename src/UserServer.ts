@@ -4,11 +4,11 @@ import { Socket, Server as netServer } from "net";
 import { Client } from "./Client";
 import { IClient } from "./Interfaces/IClient";
 import { IMessageHandler } from "./Interfaces/IMessageHandler";
-import { AuthenticationChallenge } from "./Messages/GameClientInterface/Challenge";
-import { GetAvatarURLHandler } from "./Messages/GameClientInterface/AcquireAvatar";
-import { PingHandler } from "./Messages/Common/Ping";
-import { HandshakeHandler } from "./Messages/GameClientInterface/Handshake";
-import { SetVisibleUsernameHandler } from "./Messages/GameClientInterface/AccountInfo";
+import { AuthenticationChallenge } from "./Protocol/GameClientInterface/Challenge";
+import { GetAvatarURLHandler } from "./Protocol/GameClientInterface/AcquireAvatar";
+import { PingHandler } from "./Protocol/Common/Ping";
+import { HandshakeHandler } from "./Protocol/GameClientInterface/Handshake";
+import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/AccountInfo";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -17,11 +17,16 @@ export enum MESSAGE_ID {
     "Ping",
     "AcquireAvatar",
     "AcquireDice",
-    "MessageBase",
+    "LobbyData",
     "Filler3",
     "Filler1",
     "Filler2",
     "SetVisibleUsername",
+    "Filler4",
+    "Filler5",
+    "Filler6",
+    "Filler7",
+    "LobbyPlayer",
     INVALID,
     LAST = INVALID
 };

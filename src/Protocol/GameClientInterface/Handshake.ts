@@ -1,5 +1,5 @@
 
-import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { MessageBase } from "../Common/MessageBase";
 import { IMessageHandler } from "../../Interfaces/IMessageHandler";
 import { IServer } from "../../Interfaces/IServer";
 import { IClient } from "../../Interfaces/IClient";
@@ -8,9 +8,7 @@ import { ObjectId } from "mongodb";
 import { v4 as uuid } from "uuid";
 import crypto from "crypto";
 
-export class Handshake implements IMessageBase {
-
-    valid : boolean = false;
+export class Handshake extends MessageBase {
 
     public id : string = "";
     public device_uuid : string = "";
@@ -21,12 +19,6 @@ export class Handshake implements IMessageBase {
     public operatingSystem : string = "";
     public protocolVersion : number = 0;
     public gameVersion : number = 0;
-
-    constructor(protected messageId : number, buffer? : Buffer) {
-        if (buffer) {
-            this.deserialize(buffer);
-        }
-    }
 
     serialize() : Buffer {
         // TODO : Clean this up
@@ -119,6 +111,8 @@ export class HandshakeHandler implements IMessageHandler {
                     response.device_uuid = user.device_uuid;
                     response.lastLogin = new Date();
 
+                    myClient.gameVersion = message.gameVersion;
+
                     user.password = crypto.createHmac('sha1', user.salt).update(user.password).digest('hex');
                     user.save();
 
@@ -152,6 +146,7 @@ export class HandshakeHandler implements IMessageHandler {
                         response.lastLogin = user.last_login;
 
                         myClient.authenticated = true;
+                        myClient.gameVersion = message.gameVersion;
 
                         user.last_login = new Date();
                         user.save();

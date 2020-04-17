@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { AddRemoveFriend, AddRemoveFriendHandler } from "../src/Messages/GameClientInterface/FriendInfo";
+import { AddRemoveFriend, AddRemoveFriendHandler } from "../src/Protocol/GameClientInterface/FriendInfo";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { ObjectId } from "mongodb";

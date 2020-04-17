@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { UserServer } from "./UserServer";
 import { GameServerServer } from "./GameServerServer";
 import mongoose from "mongoose";
+import { LobbyManager } from "./LobbyManager";
 
 config();
 
@@ -15,6 +16,8 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("Mongo DB connected!");
 });
+
+const lobbyManager : LobbyManager = new LobbyManager();
 
 const server : UserServer = new UserServer();
 server.start(gameClientPort);

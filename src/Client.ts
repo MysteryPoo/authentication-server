@@ -9,6 +9,8 @@ export class Client implements IClient {
 
     public uid : string = uuid();
     public authenticated : boolean = false;
+    public isReady : boolean = false;
+    public gameVersion : number = 0;
 
     constructor(private socket : Socket, private serverRef : IServer) {
 
@@ -16,11 +18,16 @@ export class Client implements IClient {
             let tell : number = 0;
             let success : boolean = false;
             while(tell < data.byteLength) {
-                let messageType : MESSAGE_ID = data.readUInt8(tell);
+                let rawIdentifier : number = data.readUInt8(tell);
                 let messageSize : number = data.readUInt32LE(tell + 1);
                 let messageData : Buffer = data.slice(tell + 5, tell + messageSize);
-                if (this.serverRef.handlerList[messageType]) {
-                    this.serverRef.handlerList[messageType].handle(messageData, this);
+
+                let messageType : MESSAGE_ID;
+                if (rawIdentifier >= MESSAGE_ID.FIRST && rawIdentifier <= MESSAGE_ID.LAST) {
+                    messageType = rawIdentifier;
+                    if (this.serverRef.handlerList[messageType]) {
+                        this.serverRef.handlerList[messageType].handle(messageData, this);
+                    }
                 }
                 tell += messageSize;
             }

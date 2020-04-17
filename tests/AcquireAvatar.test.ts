@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { GetAvatarURLHandler, GetAvatarURL } from "../src/Messages/GameClientInterface/AcquireAvatar";
+import { GetAvatarURLHandler, GetAvatarURL } from "../src/Protocol/GameClientInterface/AcquireAvatar";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { ObjectId } from "mongodb";

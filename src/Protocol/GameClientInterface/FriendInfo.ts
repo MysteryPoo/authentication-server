@@ -1,5 +1,5 @@
 /// TODO : Rename to AddRemoveFriend
-import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { MessageBase } from "../Common/MessageBase";
 import { IMessageHandler } from "../../Interfaces/IMessageHandler";
 import { IServer } from "../../Interfaces/IServer";
 import { IClient } from "../../Interfaces/IClient";
@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 
 const size = 8;
 
-export class AddRemoveFriend implements IMessageBase {
+export class AddRemoveFriend extends MessageBase {
     
     valid: boolean = false;
 
@@ -15,12 +15,6 @@ export class AddRemoveFriend implements IMessageBase {
     public username : string = "";
     public online : boolean = false;
     public remove : boolean = false;
-
-    constructor(protected messageId: number, buffer?: Buffer) {
-        if (buffer) {
-            this.deserialize(buffer);
-        }
-    }
     
     serialize(): Buffer {
         let idLength : number = Buffer.byteLength(this.id.toHexString(), 'utf-8');

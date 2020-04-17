@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { GetDiceURL, GetDiceURLHandler } from "../src/Messages/GameClientInterface/AcquireDice";
+import { GetDiceURL, GetDiceURLHandler } from "../src/Protocol/GameClientInterface/AcquireDice";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { SocketMock } from "./Mocks/SocketMock";
