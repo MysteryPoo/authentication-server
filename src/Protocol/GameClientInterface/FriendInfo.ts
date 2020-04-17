@@ -42,9 +42,7 @@ export class AddRemoveFriend extends MessageBase {
 
             const bufferSize = 2 + idLength;
 
-            if(buffer.length != bufferSize) {
-                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
-            }
+            this.validate(buffer, bufferSize);
 
             this.id = new ObjectId(buffer.toString('utf8', 1, 1 + idLength));
             let flags = buffer.readUInt8(1 + idLength);

@@ -29,9 +29,7 @@ export class GetDiceURL extends MessageBase {
 
             const bufferSize = 1 + idLength;
 
-            if(buffer.length != bufferSize) {
-                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
-            }
+            this.validate(buffer, bufferSize);
 
             this.id = new ObjectId(buffer.toString('utf8', 1, 1 + idLength));
 

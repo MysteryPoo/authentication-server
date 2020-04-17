@@ -66,9 +66,7 @@ export class Handshake extends MessageBase {
 
             const bufferSize = 5 + idLength + passLength + uuidDeviceLength;
 
-            if(buffer.length != bufferSize) {
-                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
-            }
+            this.validate(buffer, bufferSize);
             
             this.id = id;
             this.password = password;

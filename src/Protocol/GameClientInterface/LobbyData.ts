@@ -20,10 +20,7 @@ export class LobbyData extends MessageBase {
 
     deserialize(buffer: Buffer): void {
         try {
-            let bufferSize : number = 2;
-            if(buffer.length != bufferSize) {
-                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
-            }
+            this.validate(buffer, 2);
 
             this.isPublic = buffer.readUInt8(0) === 0 ? false : true;
             this.maxClients = buffer.readUInt8(1);

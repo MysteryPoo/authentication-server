@@ -23,12 +23,10 @@ export class LobbyPlayer extends MessageBase {
         
         return buffer;
     }
+
     deserialize(buffer: Buffer): void {
         try {
-            let bufferSize : number = 1;
-            if(buffer.length != bufferSize) {
-                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
-            }
+            this.validate(buffer, 1);
 
             let flags : number = buffer.readUInt8(0);
 

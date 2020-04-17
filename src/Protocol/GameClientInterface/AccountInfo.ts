@@ -24,9 +24,8 @@ export class SetVisibleUsername extends MessageBase {
 
             const bufferSize = 1 + usernameLength;
 
-            if(buffer.length != bufferSize) {
-                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
-            }
+            this.validate(buffer, bufferSize);
+            
             this.username = buffer.toString('utf8', 1, 1 + usernameLength);
 
             this.valid = true;
