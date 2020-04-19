@@ -41,12 +41,12 @@ export class Client implements IClient {
                 console.debug(`Console: Socket has closed.`);
             }
             // TODO : Remove from Lobby and Queue
+            // Do this with a notify message
 
             // TODO : Notify friends
 
             // Delete
-            this.serverRef.socketMap.delete(this.uid);
-            this.destroy();
+            this.serverRef.removeClient(this);
         });
     }
 

@@ -9,6 +9,8 @@ import { GetAvatarURLHandler } from "./Protocol/GameClientInterface/AcquireAvata
 import { PingHandler } from "./Protocol/Common/Ping";
 import { HandshakeHandler } from "./Protocol/GameClientInterface/Handshake";
 import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/AccountInfo";
+import { ServerBase } from "./ServerBase";
+import { LobbyManager } from "./LobbyManager";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -31,14 +33,13 @@ export enum MESSAGE_ID {
     LAST = INVALID
 };
 
-export class UserServer extends netServer implements IServer {
+export class UserServer extends ServerBase implements IServer {
 
-    socketMap : Map<string, IClient> = new Map();
-    handlerList : Array<IMessageHandler> = [];
+    public handlerList : Array<IMessageHandler> = [];
 
     private port : number = 0;
 
-    constructor() {
+    constructor(readonly lobbyMgr : LobbyManager) {
         super();
         this.registerHandler<HandshakeHandler>(MESSAGE_ID.Handshake, HandshakeHandler);
         this.registerHandler<GetAvatarURLHandler>(MESSAGE_ID.AcquireAvatar, GetAvatarURLHandler);
@@ -91,6 +92,11 @@ export class UserServer extends netServer implements IServer {
 
     private registerHandler<T extends IMessageHandler>(messageId : MESSAGE_ID, handler : {new(serverRef : IServer, messageId : MESSAGE_ID) : T; }) {
         this.handlerList[messageId] = new handler(this, messageId);
+    }
+
+    public authenticateClient(newId : string, client : IClient) : void {
+        this.socketMap.set(newId, client);
+        this.socketMap.delete(client.uid);
     }
 
 }

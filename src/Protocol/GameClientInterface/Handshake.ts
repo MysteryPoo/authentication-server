@@ -1,12 +1,11 @@
 
 import { MessageBase } from "../Common/MessageBase";
-import { IMessageHandler } from "../../Interfaces/IMessageHandler";
-import { IServer } from "../../Interfaces/IServer";
 import { IClient } from "../../Interfaces/IClient";
 import UserModel, { IUser } from "../../Models/User.model";
 import { ObjectId } from "mongodb";
 import { v4 as uuid } from "uuid";
 import crypto from "crypto";
+import { MessageHandlerBase } from "../Common/MessageHandlerBase";
 
 export class Handshake extends MessageBase {
 
@@ -83,11 +82,7 @@ export class Handshake extends MessageBase {
     }
 }
 
-export class HandshakeHandler implements IMessageHandler {
-    
-    constructor(readonly serverRef: IServer, readonly messageId: number) {
-
-    }
+export class HandshakeHandler extends MessageHandlerBase {
 
     handle(buffer: Buffer, myClient: IClient): boolean {
         let message : Handshake = new Handshake(this.messageId, buffer);
@@ -114,8 +109,7 @@ export class HandshakeHandler implements IMessageHandler {
                     user.password = crypto.createHmac('sha1', user.salt).update(user.password).digest('hex');
                     user.save();
 
-                    this.serverRef.socketMap.set(user.id, myClient);
-                    this.serverRef.socketMap.delete(myClient.uid);
+                    this.serverRef.authenticateClient(user.id, myClient);
                     myClient.uid = user.id;
 
                     myClient.write(response.serialize());
@@ -149,8 +143,7 @@ export class HandshakeHandler implements IMessageHandler {
                         user.last_login = new Date();
                         user.save();
 
-                        this.serverRef.socketMap.set(user.id, myClient);
-                        this.serverRef.socketMap.delete(myClient.uid);
+                        this.serverRef.authenticateClient(user.id, myClient);
                         myClient.uid = user.id;
                     } else {
                         response.id = "0";

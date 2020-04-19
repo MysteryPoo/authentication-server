@@ -19,7 +19,7 @@ db.once('open', function() {
 
 const lobbyManager : LobbyManager = new LobbyManager();
 
-const server : UserServer = new UserServer();
+const server : UserServer = new UserServer(lobbyManager);
 server.start(gameClientPort);
 
 const gameServerManager : GameServerServer = new GameServerServer();

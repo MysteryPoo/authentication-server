@@ -1,5 +1,9 @@
 
 import { MessageBase } from "../Common/MessageBase";
+import { MessageHandlerBase } from "../Common/MessageHandlerBase";
+import { IClient } from "../../Interfaces/IClient";
+import { UserServer } from "../../UserServer";
+import { ILobby } from "../../Interfaces/ILobby";
 
 export class LobbyData extends MessageBase {
 
@@ -28,6 +32,34 @@ export class LobbyData extends MessageBase {
             this.valid = true;
         } catch (e) {
             this.valid = false;
+        }
+    }
+    
+}
+
+// This is specific to UserServer
+export class LobbyDataHandler extends MessageHandlerBase {
+
+    handle(buffer: Buffer, myClient: IClient): boolean {
+        let message : LobbyData = new LobbyData(this.messageId, buffer);
+
+        if (message.valid && myClient.authenticated) {
+            let serv : UserServer = this.serverRef as UserServer;
+            let lobby : ILobby | undefined = serv.lobbyMgr.getLobbyOfClient(myClient);
+
+            if (lobby) {
+                if(lobby.clientList[0] === myClient) {
+                    lobby.maxPlayers = message.maxClients;
+                    lobby.isPublic = message.isPublic;
+                }
+                for(let i = 0; i < lobby.clientList.length; ++i) {
+                    lobby.clientList[i].isReady = false;
+                }
+                lobby.update();
+            }
+            return true;
+        } else {
+            return false;
         }
     }
     
