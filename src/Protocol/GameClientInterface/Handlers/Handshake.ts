@@ -63,8 +63,7 @@ export class HandshakeHandler extends MessageHandlerBase {
                             response.username = user.username;
                             response.device_uuid = user.device_uuid;
                             response.lastLogin = user.last_login;
-
-                            myClient.authenticated = true;
+                            
                             myClient.gameVersion = message.gameVersion;
 
                             user.last_login = new Date();

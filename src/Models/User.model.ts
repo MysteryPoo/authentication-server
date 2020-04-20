@@ -20,15 +20,18 @@ const UserSchema : Schema = new Schema({
     },
     avatarUri: {
         type: String,
-        required: false
+        required: false,
+        default: ""
     },
     diceUri: {
         type: String,
-        required: false
+        required: false,
+        default: ""
     },
     email: {
         type: String,
-        required: false
+        required: false,
+        default: ""
     },
     created: {
         type: Date,
@@ -67,7 +70,7 @@ interface IUserSchema extends Document {
     salt : string,
     username : string,
     avatarUri : string,
-    diceUri? : string,
+    diceUri : string,
     email : string,
     created : Date,
     last_login : Date,
@@ -78,16 +81,16 @@ interface IUserSchema extends Document {
     level : number,
     credits : number,
     premium : number, // Old rares
-    conquest? : number,
+    conquest : number,
     rating : number,
     rank : number,
     avatarList : Types.Array<Types.ObjectId>,
-    diceList? : Types.Array<Types.ObjectId>,
+    diceList : Types.Array<Types.ObjectId>,
     shipSkinList? : Types.Array<Types.ObjectId>,
     friendList : Types.Array<Types.ObjectId>,
     messageList : Types.Array<Types.ObjectId>,
-    pendingBattleReports? : Types.Array<Types.ObjectId>,
-    pendingAwards? : Types.Array<Types.ObjectId>
+    pendingBattleReports : Types.Array<Types.ObjectId>,
+    pendingAwards : Types.Array<Types.ObjectId>
 }
 
 interface IUserBase extends IUserSchema {

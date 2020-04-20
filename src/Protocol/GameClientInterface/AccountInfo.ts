@@ -53,8 +53,6 @@ export class SetVisibleUsernameHandler implements IMessageHandler {
 
                     user.username = message.username;
 
-                    user.save();
-
                     let hs : Handshake = new Handshake(MESSAGE_ID.Handshake);
                     hs.id = user.id;
                     hs.username = user.username;
@@ -62,6 +60,8 @@ export class SetVisibleUsernameHandler implements IMessageHandler {
                     hs.lastLogin = user.last_login;
 
                     myClient.write(hs.serialize());
+
+                    user.save();
                 });
             }
             return true;

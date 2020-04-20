@@ -15,6 +15,8 @@ import { ILobby } from "./Interfaces/ILobby";
 import { NewLobbyHandler } from "./Protocol/GameClientInterface/Handlers/NewLobby";
 import { LobbyDataHandler } from "./Protocol/GameClientInterface/LobbyData";
 import { LobbyPlayerHandler } from "./Protocol/GameClientInterface/Handlers/LobbyPlayer";
+import { GetPublicPlayerInfoHandler } from "./Protocol/GameClientInterface/Handlers/GetPublicPlayerInfo";
+import { GetDashboardHandler } from "./Protocol/GameClientInterface/Handlers/GetDashboard";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -33,6 +35,9 @@ export enum MESSAGE_ID {
     "Filler6",
     "Filler7",
     "LobbyPlayer",
+    "GetDashboard",
+    "Filler9",
+    "GetPublicPlayerInfo",
     INVALID,
     LAST = INVALID
 };
@@ -52,6 +57,8 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<NewLobbyHandler>(MESSAGE_ID.NewLobby, NewLobbyHandler);
         this.registerHandler<LobbyDataHandler>(MESSAGE_ID.LobbyData, LobbyDataHandler);
         this.registerHandler<LobbyPlayerHandler>(MESSAGE_ID.LobbyPlayer, LobbyPlayerHandler);
+        this.registerHandler<GetPublicPlayerInfoHandler>(MESSAGE_ID.GetPublicPlayerInfo, GetPublicPlayerInfoHandler);
+        this.registerHandler<GetDashboardHandler>(MESSAGE_ID.GetDashboard, GetDashboardHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {
@@ -108,6 +115,11 @@ export class UserServer extends ServerBase implements IServer {
     public authenticateClient(newId : string, client : IClient) : void {
         this.socketMap.set(newId, client);
         this.socketMap.delete(client.uid);
+        client.authenticated = true;
+    }
+
+    public getAuthenticatedUsersCount() : number {
+        return this.socketMap.size;
     }
 
 }
