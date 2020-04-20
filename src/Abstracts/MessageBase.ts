@@ -1,5 +1,5 @@
 
-import { IMessageBase } from "../../Interfaces/IMessageBase";
+import { IMessageBase } from "../Interfaces/IMessageBase";
 
 export abstract class MessageBase implements IMessageBase {
     

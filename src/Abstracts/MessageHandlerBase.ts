@@ -1,7 +1,7 @@
 
-import { IMessageHandler } from "../../Interfaces/IMessageHandler";
-import { IServer } from "../../Interfaces/IServer";
-import { IClient } from "../../Interfaces/IClient";
+import { IMessageHandler } from "../Interfaces/IMessageHandler";
+import { IServer } from "../Interfaces/IServer";
+import { IClient } from "../Interfaces/IClient";
 
 export abstract class MessageHandlerBase implements IMessageHandler {
 

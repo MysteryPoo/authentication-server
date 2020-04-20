@@ -1,11 +1,12 @@
 
-import { MessageBase } from "../Common/MessageBase";
+import { MessageBase } from "../../Abstracts/MessageBase";
 import { IClient } from "../../Interfaces/IClient";
 import UserModel, { IUser } from "../../Models/User.model";
 import { ObjectId } from "mongodb";
 import { v4 as uuid } from "uuid";
 import crypto from "crypto";
-import { MessageHandlerBase } from "../Common/MessageHandlerBase";
+import { MessageHandlerBase } from "../../Abstracts/MessageHandlerBase";
+import { UserServer } from "../../UserServer";
 
 export class Handshake extends MessageBase {
 
@@ -109,7 +110,8 @@ export class HandshakeHandler extends MessageHandlerBase {
                     user.password = crypto.createHmac('sha1', user.salt).update(user.password).digest('hex');
                     user.save();
 
-                    this.serverRef.authenticateClient(user.id, myClient);
+                    let server : UserServer = this.serverRef as UserServer;
+                    server.authenticateClient(user.id, myClient);
                     myClient.uid = user.id;
 
                     myClient.write(response.serialize());
@@ -143,7 +145,8 @@ export class HandshakeHandler extends MessageHandlerBase {
                         user.last_login = new Date();
                         user.save();
 
-                        this.serverRef.authenticateClient(user.id, myClient);
+                        let server : UserServer = this.serverRef as UserServer;
+                        server.authenticateClient(user.id, myClient);
                         myClient.uid = user.id;
                     } else {
                         response.id = "0";

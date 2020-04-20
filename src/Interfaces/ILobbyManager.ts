@@ -19,7 +19,5 @@ export interface ILobbyManager {
     removeLobby(lobby : ILobby) : boolean;
     addToQueue(lobby : ILobby) : QUEUE_ERROR;
     removeFromQueue(lobby : ILobby) : boolean;
-    mergeLobbies(lobbyA : ILobby, lobbyB : ILobby) : ILobby; // I question the publicity of this method
-    getAvailableLobby(lobbyToSkip : ILobby, numPlayers : number) : ILobby | undefined; // I question the publicity of this method
 
 }

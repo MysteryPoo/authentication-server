@@ -1,5 +1,5 @@
 /// TODO : Rename this to SetVisibleUsername
-import { MessageBase } from "../Common/MessageBase";
+import { MessageBase } from "../../Abstracts/MessageBase";
 import { IMessageHandler } from "../../Interfaces/IMessageHandler";
 import { MESSAGE_ID } from "../../UserServer";
 import { IServer } from "../../Interfaces/IServer";

@@ -1,5 +1,5 @@
 /// TODO : Rename to AuthenticationChallenge
-import { MessageBase } from "../Common/MessageBase";
+import { MessageBase } from "../../Abstracts/MessageBase";
 
 const size = 6;
 

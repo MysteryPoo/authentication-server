@@ -1,5 +1,5 @@
 
-import { MessageBase } from "../Common/MessageBase";
+import { MessageBase } from "../../Abstracts/MessageBase";
 
 export class LobbyPlayer extends MessageBase {
 

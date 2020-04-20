@@ -1,5 +1,5 @@
 /// TODO : Rename to AddRemoveFriend
-import { MessageBase } from "../Common/MessageBase";
+import { MessageBase } from "../../Abstracts/MessageBase";
 import { IMessageHandler } from "../../Interfaces/IMessageHandler";
 import { IServer } from "../../Interfaces/IServer";
 import { IClient } from "../../Interfaces/IClient";
@@ -8,8 +8,6 @@ import { ObjectId } from "mongodb";
 const size = 8;
 
 export class AddRemoveFriend extends MessageBase {
-    
-    valid: boolean = false;
 
     public id : ObjectId = new ObjectId();
     public username : string = "";

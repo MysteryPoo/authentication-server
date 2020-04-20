@@ -7,6 +7,4 @@ export interface IServer {
     handlerList : Array<IMessageHandler>;
 
     removeClient(client : IClient) : void;
-
-    authenticateClient(newId : string, client : IClient) : void;
 }

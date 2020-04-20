@@ -27,7 +27,11 @@ export class Client implements IClient {
                     messageType = rawIdentifier;
                     if (this.serverRef.handlerList[messageType]) {
                         this.serverRef.handlerList[messageType].handle(messageData, this);
+                    } else {
+                        console.error(`No handler registered for this messageType: ${messageType}`);
                     }
+                } else {
+                    console.error(`Unknown messageType: ${rawIdentifier}`);
                 }
                 tell += messageSize;
             }
@@ -40,8 +44,6 @@ export class Client implements IClient {
             } else {
                 console.debug(`Console: Socket has closed.`);
             }
-            // TODO : Remove from Lobby and Queue
-            // Do this with a notify message
 
             // TODO : Notify friends
 

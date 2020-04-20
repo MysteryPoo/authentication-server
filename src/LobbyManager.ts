@@ -113,7 +113,7 @@ export class LobbyManager implements ILobbyManager {
 		return false;
     }
 
-    mergeLobbies(lobbyA: ILobby, lobbyB: ILobby): ILobby {
+    private mergeLobbies(lobbyA: ILobby, lobbyB: ILobby): ILobby {
         // Note : This method will force two lobbies to merge regardless of their capacity. Caller's responsibility to check. Maybe add TODO here.
         for (let client of lobbyB.clientList) {
             //lobbyA.addPlayer(client); // Can't use this, as it has checks; need to bypass the checks for now
@@ -132,7 +132,7 @@ export class LobbyManager implements ILobbyManager {
 		return lobbyA;
     }
 
-    getAvailableLobby(lobbyToSkip: ILobby, numPlayers: number): ILobby | undefined {
+    private getAvailableLobby(lobbyToSkip: ILobby, numPlayers: number): ILobby | undefined {
         return this.lobbyQueue.find( (element) => {
 			if(element !== lobbyToSkip) {
 				return element.getAvailableSlots() >= numPlayers;

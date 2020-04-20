@@ -1,6 +1,6 @@
 
-import { MessageBase } from "../Common/MessageBase";
-import { MessageHandlerBase } from "../Common/MessageHandlerBase";
+import { MessageBase } from "../../Abstracts/MessageBase";
+import { MessageHandlerBase } from "../../Abstracts/MessageHandlerBase";
 import { IClient } from "../../Interfaces/IClient";
 import { ILobby } from "../../Interfaces/ILobby";
 import { UserServer } from "../../UserServer";

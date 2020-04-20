@@ -1,5 +1,5 @@
 /// TODO : Rename to GetDiceURL
-import { MessageBase } from "../Common/MessageBase";
+import { MessageBase } from "../../Abstracts/MessageBase";
 import { IMessageHandler } from "../../Interfaces/IMessageHandler";
 import { IServer } from "../../Interfaces/IServer";
 import { IClient } from "../../Interfaces/IClient";

@@ -15,6 +15,10 @@ export enum MESSAGE_ID {
 
 export class GameServerServer extends netServer implements IGameServerServer {
     
+    authenticateClient(newId: string, client: import("./Interfaces/IClient").IClient): void {
+        throw new Error("Method not implemented.");
+    }
+    
     socketMap: Map<string, import("./Interfaces/IClient").IClient> = new Map();
     handlerList: import("./Interfaces/IMessageHandler").IMessageHandler[] = [];
     

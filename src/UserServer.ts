@@ -11,6 +11,7 @@ import { HandshakeHandler } from "./Protocol/GameClientInterface/Handshake";
 import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/AccountInfo";
 import { ServerBase } from "./ServerBase";
 import { LobbyManager } from "./LobbyManager";
+import { ILobby } from "./Interfaces/ILobby";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -86,6 +87,10 @@ export class UserServer extends ServerBase implements IServer {
     }
 
     public removeClient(client : IClient) : void {
+        let lobby : ILobby | undefined = this.lobbyMgr.getLobbyOfClient(client);
+        if (lobby) {
+            lobby.removePlayer(client);
+        }
         this.socketMap.delete(client.uid);
         client.destroy();
     }
