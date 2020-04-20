@@ -14,6 +14,7 @@ import { LobbyManager } from "./LobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
 import { NewLobbyHandler } from "./Protocol/GameClientInterface/Handlers/NewLobby";
 import { LobbyDataHandler } from "./Protocol/GameClientInterface/LobbyData";
+import { LobbyPlayerHandler } from "./Protocol/GameClientInterface/Handlers/LobbyPlayer";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -50,6 +51,7 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<SetVisibleUsernameHandler>(MESSAGE_ID.SetVisibleUsername, SetVisibleUsernameHandler);
         this.registerHandler<NewLobbyHandler>(MESSAGE_ID.NewLobby, NewLobbyHandler);
         this.registerHandler<LobbyDataHandler>(MESSAGE_ID.LobbyData, LobbyDataHandler);
+        this.registerHandler<LobbyPlayerHandler>(MESSAGE_ID.LobbyPlayer, LobbyPlayerHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {

@@ -6,7 +6,7 @@ import { IGameServer } from "./Interfaces/IGameServer";
 import { IMessageBase } from "./Interfaces/IMessageBase";
 import { LobbyData } from "./Protocol/GameClientInterface/LobbyData";
 import { MESSAGE_ID } from "./UserServer";
-import { LobbyPlayer } from "./Protocol/GameClientInterface/LobbyPlayer";
+import { LobbyPlayer } from "./Protocol/GameClientInterface/Messages/LobbyPlayer";
 
 export class Lobby implements ILobby {
 

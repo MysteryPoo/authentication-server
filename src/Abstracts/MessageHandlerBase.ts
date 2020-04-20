@@ -9,6 +9,6 @@ export abstract class MessageHandlerBase implements IMessageHandler {
 
     }
 
-    abstract handle(buffer: Buffer, mySocket: IClient): boolean;
+    abstract handle(buffer: Buffer, myClient: IClient): boolean;
     
 }
