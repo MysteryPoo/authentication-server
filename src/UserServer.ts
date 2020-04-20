@@ -1,6 +1,6 @@
 
 import { IServer } from "./Interfaces/IServer";
-import { Socket, Server as netServer } from "net";
+import { Socket } from "net";
 import { Client } from "./Client";
 import { IClient } from "./Interfaces/IClient";
 import { IMessageHandler } from "./Interfaces/IMessageHandler";
@@ -12,7 +12,7 @@ import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/Accoun
 import { ServerBase } from "./ServerBase";
 import { LobbyManager } from "./LobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
-import { NewLobbyHandler } from "./Protocol/GameClientInterface/NewLobby";
+import { NewLobbyHandler } from "./Protocol/GameClientInterface/Handlers/NewLobby";
 import { LobbyDataHandler } from "./Protocol/GameClientInterface/LobbyData";
 
 export enum MESSAGE_ID {
