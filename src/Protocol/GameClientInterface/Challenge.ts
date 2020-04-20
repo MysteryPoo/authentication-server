@@ -5,7 +5,7 @@ const size = 6;
 
 export class AuthenticationChallenge extends MessageBase {
 
-    public salt : string = "";
+    public salt! : string;
     
     serialize(): Buffer {
         let saltLength : number = Buffer.byteLength(this.salt, 'utf-8');

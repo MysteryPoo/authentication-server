@@ -18,6 +18,7 @@ export class Lobby implements ILobby {
     constructor(private lobbyMgrRef : ILobbyManager, host : IClient, public isPublic : boolean, public maxPlayers : number) {
         this.clientList.push(host);
         this.gameVersion = host.gameVersion;
+        this.update();
     }
 
     addPlayer(client: IClient): ERROR {

@@ -7,8 +7,8 @@ import { UserServer } from "../../UserServer";
 
 export class NewLobby extends MessageBase {
 
-    public isPublic : boolean = false;
-    public maxPlayers : number  = 0;
+    public isPublic! : boolean;
+    public maxPlayers! : number;
 
     serialize(): Buffer {
         throw new Error("Method not implemented.");

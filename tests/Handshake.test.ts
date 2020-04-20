@@ -1,6 +1,7 @@
 
 import { expect } from "chai";
-import { Handshake, HandshakeHandler } from "../src/Protocol/GameClientInterface/Handshake";
+import { HandshakeHandler } from "../src/Protocol/GameClientInterface/Handlers/Handshake";
+import { Handshake } from "../src/Protocol/GameClientInterface/Messages/Handshake";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { ObjectId } from "mongodb";

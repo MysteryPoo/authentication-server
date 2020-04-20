@@ -5,13 +5,13 @@ import { MESSAGE_ID } from "../../UserServer";
 import { IServer } from "../../Interfaces/IServer";
 import { IClient } from "../../Interfaces/IClient";
 import UserModel, { IUser } from "../../Models/User.model";
-import { Handshake } from "./Handshake";
+import { Handshake } from "./Messages/Handshake";
 
 const size = 0;
 
 export class SetVisibleUsername extends MessageBase {
 
-    public username : string = "";
+    public username! : string;
 
     serialize(): Buffer {
         // TODO : Implement this with an error code for the client to process

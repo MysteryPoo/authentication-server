@@ -7,9 +7,9 @@ import { ILobby } from "../../Interfaces/ILobby";
 
 export class LobbyData extends MessageBase {
 
-    public numClients : number = 0;
-    public maxClients : number = 0;
-    public isPublic : boolean = false;
+    public numClients! : number;
+    public maxClients! : number;
+    public isPublic! : boolean;
 
     serialize(): Buffer {
         let bufferSize : number = 8;

@@ -106,10 +106,11 @@ export class LobbyManager implements ILobbyManager {
 			console.log("LobbyController: Number of lobbies = " + this.lobbyList.length);
 			console.log("LobbyController: Lobbies in Queue = " + this.lobbyQueue.length);
 			return true;
-		}
-		console.log("LobbyController: Failed to remove lobby from queue.");
-		console.log("LobbyController: Number of lobbies = " + this.lobbyList.length);
-		console.log("LobbyController: Lobbies in Queue = " + this.lobbyQueue.length);
+		} else {
+            console.log("LobbyController: Failed to remove lobby from queue.");
+            console.log("LobbyController: Number of lobbies = " + this.lobbyList.length);
+            console.log("LobbyController: Lobbies in Queue = " + this.lobbyQueue.length);
+        }
 		return false;
     }
 

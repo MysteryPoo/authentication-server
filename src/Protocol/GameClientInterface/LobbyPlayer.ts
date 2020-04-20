@@ -3,15 +3,15 @@ import { MessageBase } from "../../Abstracts/MessageBase";
 
 export class LobbyPlayer extends MessageBase {
 
-    public clientListIndex : number = 0;
-    public id : string = "";
-    public isReady : boolean = false;
-    public requestingToLeaveLobby : boolean = false;
+    public clientListIndex! : number;
+    public id! : string;
+    public isReady! : boolean;
+    public requestingToLeaveLobby! : boolean;
 
     serialize(): Buffer {
         let idLength = Buffer.byteLength(this.id, 'utf-8');
         
-        let bufferSize : number = 7 + idLength;
+        let bufferSize : number = 8 + idLength;
         let buffer : Buffer = Buffer.allocUnsafe(bufferSize);
 
         buffer.writeUInt8(this.messageId, 0);

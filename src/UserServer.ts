@@ -7,11 +7,13 @@ import { IMessageHandler } from "./Interfaces/IMessageHandler";
 import { AuthenticationChallenge } from "./Protocol/GameClientInterface/Challenge";
 import { GetAvatarURLHandler } from "./Protocol/GameClientInterface/AcquireAvatar";
 import { PingHandler } from "./Protocol/Common/Ping";
-import { HandshakeHandler } from "./Protocol/GameClientInterface/Handshake";
+import { HandshakeHandler } from "./Protocol/GameClientInterface/Handlers/Handshake";
 import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/AccountInfo";
 import { ServerBase } from "./ServerBase";
 import { LobbyManager } from "./LobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
+import { NewLobbyHandler } from "./Protocol/GameClientInterface/NewLobby";
+import { LobbyDataHandler } from "./Protocol/GameClientInterface/LobbyData";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -46,6 +48,8 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<GetAvatarURLHandler>(MESSAGE_ID.AcquireAvatar, GetAvatarURLHandler);
         this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);
         this.registerHandler<SetVisibleUsernameHandler>(MESSAGE_ID.SetVisibleUsername, SetVisibleUsernameHandler);
+        this.registerHandler<NewLobbyHandler>(MESSAGE_ID.NewLobby, NewLobbyHandler);
+        this.registerHandler<LobbyDataHandler>(MESSAGE_ID.LobbyData, LobbyDataHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {

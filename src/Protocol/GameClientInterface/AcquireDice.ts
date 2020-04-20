@@ -9,8 +9,8 @@ const size : number = 6;
 
 export class GetDiceURL extends MessageBase {
 
-    public url : string = "";
-    public id : ObjectId = new ObjectId();
+    public url! : string;
+    public id! : ObjectId;
 
     public serialize() : Buffer {
         let urlLength : number = Buffer.byteLength(this.url, 'utf8');

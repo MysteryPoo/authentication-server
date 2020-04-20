@@ -28,7 +28,7 @@ export class Client implements IClient {
                     if (this.serverRef.handlerList[messageType]) {
                         this.serverRef.handlerList[messageType].handle(messageData, this);
                     } else {
-                        console.error(`No handler registered for this messageType: ${messageType}`);
+                        console.error(`No handler registered for this messageType: ${MESSAGE_ID[messageType]}(${messageType})`);
                     }
                 } else {
                     console.error(`Unknown messageType: ${rawIdentifier}`);

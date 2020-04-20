@@ -9,10 +9,10 @@ const size = 8;
 
 export class AddRemoveFriend extends MessageBase {
 
-    public id : ObjectId = new ObjectId();
-    public username : string = "";
-    public online : boolean = false;
-    public remove : boolean = false;
+    public id! : ObjectId;
+    public username! : string;
+    public online! : boolean;
+    public remove! : boolean;
     
     serialize(): Buffer {
         let idLength : number = Buffer.byteLength(this.id.toHexString(), 'utf-8');
