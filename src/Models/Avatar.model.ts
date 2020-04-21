@@ -17,6 +17,10 @@ const AvatarSchema : Schema = new Schema({
     uri: {
         type: String,
         required: true
+    },
+    visible: {
+        type: Boolean,
+        required: true
     }
 });
 
@@ -25,6 +29,7 @@ export interface IAvatar extends Document {
     creditCost: number;
     premiumCost: number;
     uri: string;
+    visible: boolean;
 }
 
 export default model<IAvatar>('Avatar', AvatarSchema);

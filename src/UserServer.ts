@@ -18,6 +18,7 @@ import { GetPublicPlayerInfoHandler } from "./Protocol/GameClientInterface/Handl
 import { GetDashboardHandler } from "./Protocol/GameClientInterface/Handlers/GetDashboard";
 import { PurchaseAvatarByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseAvatarByID";
 import { PurchaseDiceByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseDiceById";
+import { GetAvatarListHandler } from "./Protocol/GameClientInterface/Handlers/GetAvatarList";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -42,6 +43,7 @@ export enum MESSAGE_ID {
     "GetDashboard",
     "Filler9",
     "GetPublicPlayerInfo",
+    "GetAvatarList",
     INVALID,
     LAST = INVALID
 };
@@ -63,6 +65,7 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<GetPublicPlayerInfoHandler>(MESSAGE_ID.GetPublicPlayerInfo, GetPublicPlayerInfoHandler);
         this.registerHandler<GetDashboardHandler>(MESSAGE_ID.GetDashboard, GetDashboardHandler);
         this.registerHandler<PurchaseAvatarByIdHandler>(MESSAGE_ID.PurchaseAvatarById, PurchaseDiceByIdHandler);
+        this.registerHandler<GetAvatarListHandler>(MESSAGE_ID.GetAvatarList, GetAvatarListHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {

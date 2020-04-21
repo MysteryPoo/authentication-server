@@ -15,6 +15,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("Mongo DB connected!");
+    fillStaticContent();
 });
 
 const lobbyManager : LobbyManager = new LobbyManager();
@@ -23,4 +24,8 @@ const server : UserServer = new UserServer(lobbyManager);
 server.start(gameClientPort);
 
 const gameServerManager : GameServerServer = new GameServerServer();
+
+function fillStaticContent() : void {
+
+}
 
