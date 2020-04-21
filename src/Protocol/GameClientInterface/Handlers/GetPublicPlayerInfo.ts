@@ -9,10 +9,7 @@ export class GetPublicPlayerInfoHandler extends MessageHandlerBase {
     handle(buffer: Buffer, myClient: IClient): boolean {
         let message : GetPublicPlayerInfo = new GetPublicPlayerInfo(this.messageId, buffer);
 
-        console.debug("Client requesting info");
-
         if (message.valid && myClient.authenticated) {
-            console.debug(message);
             UserModel.findById(message.id).select({username: 1, avatarUri: 1, rank: 1}).exec( (err, user : IUser) => {
                 if (err) console.error(err);
 
@@ -22,9 +19,6 @@ export class GetPublicPlayerInfoHandler extends MessageHandlerBase {
                 response.avatarUri = user.avatarUri;
                 response.diceUri = "";
                 response.rank = user.rank;
-
-                console.debug("Sending:");
-                console.debug(response);
 
                 myClient.write(response.serialize());
             });

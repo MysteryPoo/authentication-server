@@ -16,8 +16,7 @@ import { UpdateLobbyDataHandler } from "./Protocol/GameClientInterface/Handlers/
 import { LobbyPlayerHandler } from "./Protocol/GameClientInterface/Handlers/LobbyPlayer";
 import { GetPublicPlayerInfoHandler } from "./Protocol/GameClientInterface/Handlers/GetPublicPlayerInfo";
 import { GetDashboardHandler } from "./Protocol/GameClientInterface/Handlers/GetDashboard";
-import { PurchaseAvatarByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseAvatarByID";
-import { PurchaseDiceByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseDiceById";
+import { PurchaseAvatarByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseAvatarById";
 import { GetAvatarListHandler } from "./Protocol/GameClientInterface/Handlers/GetAvatarList";
 
 export enum MESSAGE_ID {
@@ -25,8 +24,7 @@ export enum MESSAGE_ID {
     "Challenge" = FIRST,
     "Handshake",
     "Ping",
-    "PurchaseAvatarById",
-    "AcquireAvatar" = PurchaseAvatarById, // Deprecated
+    "Filler10",
     "NewLobby",
     "UpdateLobbyData",
     "LobbyData" = UpdateLobbyData, // Deprecated
@@ -44,6 +42,8 @@ export enum MESSAGE_ID {
     "Filler9",
     "GetPublicPlayerInfo",
     "GetAvatarList",
+    "PurchaseAvatarById",
+    "AcquireAvatar" = PurchaseAvatarById, // Deprecated
     INVALID,
     LAST = INVALID
 };
@@ -64,7 +64,7 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<LobbyPlayerHandler>(MESSAGE_ID.LobbyPlayer, LobbyPlayerHandler);
         this.registerHandler<GetPublicPlayerInfoHandler>(MESSAGE_ID.GetPublicPlayerInfo, GetPublicPlayerInfoHandler);
         this.registerHandler<GetDashboardHandler>(MESSAGE_ID.GetDashboard, GetDashboardHandler);
-        this.registerHandler<PurchaseAvatarByIdHandler>(MESSAGE_ID.PurchaseAvatarById, PurchaseDiceByIdHandler);
+        this.registerHandler<PurchaseAvatarByIdHandler>(MESSAGE_ID.PurchaseAvatarById, PurchaseAvatarByIdHandler);
         this.registerHandler<GetAvatarListHandler>(MESSAGE_ID.GetAvatarList, GetAvatarListHandler);
         
         this.on('connection', this.onConnection);

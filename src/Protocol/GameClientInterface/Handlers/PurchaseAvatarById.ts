@@ -17,6 +17,8 @@ export class PurchaseAvatarByIdHandler extends MessageHandlerBase {
                 if (err) console.error(err);
 
                 UserModel.findById(myClient.uid).exec( (err, user : IUser) => {
+                    if (err) console.error(err);
+
                     let message : string = "";
 
                     if(user.level >= avatar.requiredLevel) {
@@ -43,13 +45,9 @@ export class PurchaseAvatarByIdHandler extends MessageHandlerBase {
                     response.message = message;
 
                     myClient.write(response.serialize());
-                }).then( (user : IUser | null) => {
-                    if (user) {
-                        let getDashboard : GetDashboardHandler = new GetDashboardHandler(this.serverRef, MESSAGE_ID.GetDashboard);
-                        getDashboard.respond(myClient, user);
-                    } else {
-                        console.error("User was null");
-                    }
+
+                    let getDashboard : GetDashboardHandler = new GetDashboardHandler(this.serverRef, MESSAGE_ID.GetDashboard);
+                    getDashboard.respond(myClient, user);
                 });
             });
             return true;
