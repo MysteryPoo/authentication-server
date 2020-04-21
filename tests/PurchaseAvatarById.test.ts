@@ -42,7 +42,7 @@ describe("AcquireAvatar Message", () => {
 
         // Instatiate test instance
         let acquireAvatar : PurchaseAvatarById = new PurchaseAvatarById(messageId);
-        acquireAvatar.url = url;
+        acquireAvatar.message = url;
         let buffer : Buffer = acquireAvatar.serialize();
         
         expect(buffer.equals(truth)).to.be.true;

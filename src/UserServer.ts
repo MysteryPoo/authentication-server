@@ -16,6 +16,8 @@ import { UpdateLobbyDataHandler } from "./Protocol/GameClientInterface/Handlers/
 import { LobbyPlayerHandler } from "./Protocol/GameClientInterface/Handlers/LobbyPlayer";
 import { GetPublicPlayerInfoHandler } from "./Protocol/GameClientInterface/Handlers/GetPublicPlayerInfo";
 import { GetDashboardHandler } from "./Protocol/GameClientInterface/Handlers/GetDashboard";
+import { PurchaseAvatarByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseAvatarByID";
+import { PurchaseDiceByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseDiceById";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -60,6 +62,7 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<LobbyPlayerHandler>(MESSAGE_ID.LobbyPlayer, LobbyPlayerHandler);
         this.registerHandler<GetPublicPlayerInfoHandler>(MESSAGE_ID.GetPublicPlayerInfo, GetPublicPlayerInfoHandler);
         this.registerHandler<GetDashboardHandler>(MESSAGE_ID.GetDashboard, GetDashboardHandler);
+        this.registerHandler<PurchaseAvatarByIdHandler>(MESSAGE_ID.PurchaseAvatarById, PurchaseDiceByIdHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {
