@@ -8,7 +8,7 @@ import { AuthenticationChallenge } from "./Protocol/GameClientInterface/Messages
 import { PingHandler } from "./Protocol/Common/Ping";
 import { HandshakeHandler } from "./Protocol/GameClientInterface/Handlers/Handshake";
 import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/Handlers/SetVisibleUsername";
-import { ServerBase } from "./ServerBase";
+import { ServerBase } from "./Abstracts/ServerBase";
 import { LobbyManager } from "./LobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
 import { NewLobbyHandler } from "./Protocol/GameClientInterface/Handlers/NewLobby";
@@ -18,6 +18,7 @@ import { GetPublicPlayerInfoHandler } from "./Protocol/GameClientInterface/Handl
 import { GetDashboardHandler } from "./Protocol/GameClientInterface/Handlers/GetDashboard";
 import { PurchaseAvatarByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseAvatarById";
 import { GetAvatarListHandler } from "./Protocol/GameClientInterface/Handlers/GetAvatarList";
+import { SetAvatarHandler } from "./Protocol/GameClientInterface/Handlers/SetAvatar";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -44,6 +45,7 @@ export enum MESSAGE_ID {
     "GetAvatarList",
     "PurchaseAvatarById",
     "AcquireAvatar" = PurchaseAvatarById, // Deprecated
+    "SetAvatar",
     INVALID,
     LAST = INVALID
 };
@@ -66,6 +68,7 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<GetDashboardHandler>(MESSAGE_ID.GetDashboard, GetDashboardHandler);
         this.registerHandler<PurchaseAvatarByIdHandler>(MESSAGE_ID.PurchaseAvatarById, PurchaseAvatarByIdHandler);
         this.registerHandler<GetAvatarListHandler>(MESSAGE_ID.GetAvatarList, GetAvatarListHandler);
+        this.registerHandler<SetAvatarHandler>(MESSAGE_ID.SetAvatar, SetAvatarHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {
@@ -127,6 +130,10 @@ export class UserServer extends ServerBase implements IServer {
 
     public getAuthenticatedUsersCount() : number {
         return this.socketMap.size;
+    }
+
+    public getClientById(id : string) : IClient | undefined {
+        return this.socketMap.get(id);
     }
 
 }
