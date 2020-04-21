@@ -1,6 +1,7 @@
 
 import { expect } from "chai";
-import { AddRemoveFriend, AddRemoveFriendHandler } from "../src/Protocol/GameClientInterface/FriendInfo";
+import { AddRemoveFriend } from "../src/Protocol/GameClientInterface/Messages/AddRemoveFriend";
+import { AddRemoveFriendHandler } from "../src/Protocol/GameClientInterface/Handlers/AddRemoveFriend";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { ObjectId } from "mongodb";
@@ -92,7 +93,7 @@ describe("AddRemoveFriend Message", () => {
 
         // Instatiate test instance
         let friend : AddRemoveFriend = new AddRemoveFriend(messageId);
-        friend.id = id;
+        friend.id = id.toHexString();
         friend.username = username;
         friend.online = online;
         friend.remove = remove;
@@ -123,7 +124,7 @@ describe("AddRemoveFriend Message", () => {
         friend.deserialize(truth);
         expect(friend.valid).to.be.true;
 
-        expect(friend.id.equals(id)).to.be.true;
+        expect(friend.id === id.toHexString());
         expect(friend.remove).to.be.true;
 
         flags = 0b00;

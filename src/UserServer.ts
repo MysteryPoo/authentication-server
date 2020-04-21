@@ -4,16 +4,15 @@ import { Socket } from "net";
 import { Client } from "./Client";
 import { IClient } from "./Interfaces/IClient";
 import { IMessageHandler } from "./Interfaces/IMessageHandler";
-import { AuthenticationChallenge } from "./Protocol/GameClientInterface/Challenge";
-import { GetAvatarURLHandler } from "./Protocol/GameClientInterface/AcquireAvatar";
+import { AuthenticationChallenge } from "./Protocol/GameClientInterface/Messages/Challenge";
 import { PingHandler } from "./Protocol/Common/Ping";
 import { HandshakeHandler } from "./Protocol/GameClientInterface/Handlers/Handshake";
-import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/AccountInfo";
+import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/Handlers/SetVisibleUsername";
 import { ServerBase } from "./ServerBase";
 import { LobbyManager } from "./LobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
 import { NewLobbyHandler } from "./Protocol/GameClientInterface/Handlers/NewLobby";
-import { LobbyDataHandler } from "./Protocol/GameClientInterface/LobbyData";
+import { UpdateLobbyDataHandler } from "./Protocol/GameClientInterface/Handlers/UpdateLobbyData";
 import { LobbyPlayerHandler } from "./Protocol/GameClientInterface/Handlers/LobbyPlayer";
 import { GetPublicPlayerInfoHandler } from "./Protocol/GameClientInterface/Handlers/GetPublicPlayerInfo";
 import { GetDashboardHandler } from "./Protocol/GameClientInterface/Handlers/GetDashboard";
@@ -23,10 +22,13 @@ export enum MESSAGE_ID {
     "Challenge" = FIRST,
     "Handshake",
     "Ping",
-    "AcquireAvatar",
+    "PurchaseAvatarById",
+    "AcquireAvatar" = PurchaseAvatarById, // Deprecated
     "NewLobby",
-    "LobbyData",
-    "AcquireDice",
+    "UpdateLobbyData",
+    "LobbyData" = UpdateLobbyData, // Deprecated
+    "PurchaseDiceById",
+    "AcquireDice" = PurchaseDiceById, // Deprecated
     "Filler1",
     "Filler2",
     "SetVisibleUsername",
@@ -51,11 +53,10 @@ export class UserServer extends ServerBase implements IServer {
     constructor(readonly lobbyMgr : LobbyManager) {
         super();
         this.registerHandler<HandshakeHandler>(MESSAGE_ID.Handshake, HandshakeHandler);
-        this.registerHandler<GetAvatarURLHandler>(MESSAGE_ID.AcquireAvatar, GetAvatarURLHandler);
         this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);
         this.registerHandler<SetVisibleUsernameHandler>(MESSAGE_ID.SetVisibleUsername, SetVisibleUsernameHandler);
         this.registerHandler<NewLobbyHandler>(MESSAGE_ID.NewLobby, NewLobbyHandler);
-        this.registerHandler<LobbyDataHandler>(MESSAGE_ID.LobbyData, LobbyDataHandler);
+        this.registerHandler<UpdateLobbyDataHandler>(MESSAGE_ID.LobbyData, UpdateLobbyDataHandler);
         this.registerHandler<LobbyPlayerHandler>(MESSAGE_ID.LobbyPlayer, LobbyPlayerHandler);
         this.registerHandler<GetPublicPlayerInfoHandler>(MESSAGE_ID.GetPublicPlayerInfo, GetPublicPlayerInfoHandler);
         this.registerHandler<GetDashboardHandler>(MESSAGE_ID.GetDashboard, GetDashboardHandler);

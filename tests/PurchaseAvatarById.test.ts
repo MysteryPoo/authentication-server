@@ -1,10 +1,11 @@
 
 import { expect } from "chai";
-import { GetDiceURL, GetDiceURLHandler } from "../src/Protocol/GameClientInterface/AcquireDice";
+import { PurchaseAvatarById } from "../src/Protocol/GameClientInterface/Messages/PurchaseAvatarByID";
+import { PurchaseAvatarByIdHandler } from "../src/Protocol/GameClientInterface/Handlers/PurchaseAvatarByID";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
-import { SocketMock } from "./Mocks/SocketMock";
 import { ObjectId } from "mongodb";
+import { SocketMock } from "./Mocks/SocketMock";
 
 function getRandomInt(max : number) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -25,8 +26,7 @@ function setupIncomingMessage(good : boolean) : Buffer {
     return incomingMessage;
 }
 
-describe("GetDiceURL Message", () => {
-
+describe("AcquireAvatar Message", () => {
     it("should serialize into a valid buffer", (done) => {
         // Setup truth
         let messageId : number = getRandomInt(255);
@@ -41,9 +41,9 @@ describe("GetDiceURL Message", () => {
         truth.write(url, 6, url.length, 'utf8');
 
         // Instatiate test instance
-        let getDice : GetDiceURL = new GetDiceURL(messageId);
-        getDice.url = url;
-        let buffer : Buffer = getDice.serialize();
+        let acquireAvatar : PurchaseAvatarById = new PurchaseAvatarById(messageId);
+        acquireAvatar.url = url;
+        let buffer : Buffer = acquireAvatar.serialize();
         
         expect(buffer.equals(truth)).to.be.true;
         done();
@@ -57,35 +57,34 @@ describe("GetDiceURL Message", () => {
         truth.writeUInt8(idLength, 0);
         truth.write(id.toHexString(), 1, idLength, 'utf8');
 
-        let getDice : GetDiceURL = new GetDiceURL(1);
-        expect(getDice.valid).to.be.false;
+        let acquireAvatar : PurchaseAvatarById = new PurchaseAvatarById(1);
+        expect(acquireAvatar.valid).to.be.false;
 
-        getDice.deserialize(truth);
-        expect(getDice.valid).to.be.true;
+        acquireAvatar.deserialize(truth);
+        expect(acquireAvatar.valid).to.be.true;
 
-        expect(getDice.id.equals(id)).to.be.true;
-
+        expect(acquireAvatar.id === id.toHexString());
+        
         done();
     });
 
     it("should catch error for poorly formatted data", (done) => {
         let lie = Buffer.allocUnsafe(32);
 
-        let getDice : GetDiceURL = new GetDiceURL(1, lie);
+        let acquireAvatar : PurchaseAvatarById = new PurchaseAvatarById(1, lie);
 
-        expect(getDice.valid).to.be.false;
+        expect(acquireAvatar.valid).to.be.false;
 
         done();
     });
-
 });
 
-describe("GetDiceURL Handler", () => {
+describe("AcquireAvatar Handler", () => {
 
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
         let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : GetDiceURLHandler = new GetDiceURLHandler(server, 1);
+        let handler : PurchaseAvatarByIdHandler = new PurchaseAvatarByIdHandler(server, 1);
 
         expect(handler.handle(setupIncomingMessage(true), myClient)).to.be.true;
 
@@ -95,7 +94,7 @@ describe("GetDiceURL Handler", () => {
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
         let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : GetDiceURLHandler = new GetDiceURLHandler(server, 1);
+        let handler : PurchaseAvatarByIdHandler = new PurchaseAvatarByIdHandler(server, 1);
 
         expect(handler.handle(setupIncomingMessage(false), myClient)).to.be.false;
 

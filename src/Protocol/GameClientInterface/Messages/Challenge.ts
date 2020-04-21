@@ -1,5 +1,6 @@
 /// TODO : Rename to AuthenticationChallenge
-import { MessageBase } from "../../Abstracts/MessageBase";
+import { MessageBase } from "../../../Abstracts/MessageBase";
+import { BufferHelper } from "../../../BufferHelper";
 
 const size = 6;
 
@@ -10,13 +11,14 @@ export class AuthenticationChallenge extends MessageBase {
     serialize(): Buffer {
         let saltLength : number = Buffer.byteLength(this.salt, 'utf-8');
         let bufferSize : number = size + saltLength;
-        let buffer : Buffer = Buffer.allocUnsafe(bufferSize);
-        buffer.writeUInt8(this.messageId, 0);
-        buffer.writeUInt32LE(bufferSize, 1);
-        buffer.writeUInt8(saltLength, 5);
-        buffer.write(this.salt, 6, saltLength, "utf-8");
+        let helper : BufferHelper = new BufferHelper(Buffer.allocUnsafe(bufferSize));
 
-        return buffer;
+        helper.writeUInt8(this.messageId);
+        helper.writeUInt32LE(bufferSize);
+        helper.writeUInt8(saltLength);
+        helper.writeString(this.salt);
+
+        return helper.buffer;
     }
 
     deserialize(buffer: Buffer): void {

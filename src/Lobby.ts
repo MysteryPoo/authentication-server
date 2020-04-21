@@ -4,7 +4,7 @@ import { ILobbyManager } from "./Interfaces/ILobbyManager";
 import { IClient } from "./Interfaces/IClient";
 import { IGameServer } from "./Interfaces/IGameServer";
 import { IMessageBase } from "./Interfaces/IMessageBase";
-import { LobbyData } from "./Protocol/GameClientInterface/LobbyData";
+import { UpdateLobbyData } from "./Protocol/GameClientInterface/Messages/UpdateLobbyData";
 import { MESSAGE_ID } from "./UserServer";
 import { LobbyPlayer } from "./Protocol/GameClientInterface/Messages/LobbyPlayer";
 
@@ -86,7 +86,7 @@ export class Lobby implements ILobby {
         let packetList : Array<IMessageBase> = [];
 
         // First message will be the lobby data
-        let lobbyData : LobbyData = new LobbyData(MESSAGE_ID.LobbyData);
+        let lobbyData : UpdateLobbyData = new UpdateLobbyData(MESSAGE_ID.LobbyData);
         lobbyData.numClients = this.clientList.length;
         lobbyData.maxClients = this.maxPlayers;
         lobbyData.isPublic = this.isPublic;
