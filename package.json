@@ -5,21 +5,21 @@
   "main": "index.js",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "mongoose": "^5.7.12",
+    "mongoose": "^5.9.10",
     "uuid": "^7.0.3"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.4",
+    "@types/chai": "^4.2.11",
     "@types/mocha": "^5.2.7",
-    "@types/mongodb": "^3.3.11",
-    "@types/mongoose": "^5.5.32",
-    "@types/node": "^12.12.6",
+    "@types/mongodb": "^3.5.9",
+    "@types/mongoose": "^5.7.12",
+    "@types/node": "^12.12.37",
     "@types/uuid": "^7.0.2",
     "chai": "^4.2.0",
     "mocha": "^6.2.3",
     "nyc": "^14.1.1",
-    "ts-node": "^8.4.1",
-    "typescript": "^3.7.2"
+    "ts-node": "^8.9.0",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
