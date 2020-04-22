@@ -4,18 +4,18 @@ import { BufferHelper } from "../../../BufferHelper";
 
 export class PurchaseDiceById extends MessageBase {
 
-    public url! : string;
+    public message! : string;
     public id! : string;
 
     public serialize() : Buffer {
-        let urlLength : number = Buffer.byteLength(this.url, 'utf8');
-        let bufferSize : number = 6 + urlLength;
+        let messageLength : number = Buffer.byteLength(this.message, 'utf8');
+        let bufferSize : number = 6 + messageLength;
 
         let helper : BufferHelper = new BufferHelper(Buffer.allocUnsafe(bufferSize));
         helper.writeUInt8(this.messageId);
         helper.writeUInt32LE(bufferSize);
-        helper.writeUInt8(urlLength);
-        helper.writeString(this.url);
+        helper.writeUInt8(messageLength);
+        helper.writeString(this.message);
 
         return helper.buffer;
     }

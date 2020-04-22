@@ -43,7 +43,7 @@ describe("GetDiceURL Message", () => {
 
         // Instatiate test instance
         let getDice : PurchaseDiceById = new PurchaseDiceById(messageId);
-        getDice.url = url;
+        getDice.message = url;
         let buffer : Buffer = getDice.serialize();
         
         expect(buffer.equals(truth)).to.be.true;

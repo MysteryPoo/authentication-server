@@ -19,33 +19,40 @@ import { GetDashboardHandler } from "./Protocol/GameClientInterface/Handlers/Get
 import { PurchaseAvatarByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseAvatarById";
 import { GetAvatarListHandler } from "./Protocol/GameClientInterface/Handlers/GetAvatarList";
 import { SetAvatarHandler } from "./Protocol/GameClientInterface/Handlers/SetAvatar";
+import { SetDiceHandler } from "./Protocol/GameClientInterface/Handlers/SetDice";
+import { GetDiceListHandler } from "./Protocol/GameClientInterface/Handlers/GetDiceList";
+import { PurchaseDiceByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseDiceById";
 
 export enum MESSAGE_ID {
     FIRST,
     "Challenge" = FIRST,
     "Handshake",
     "Ping",
-    "Filler10",
+    "MessageInfo",
     "NewLobby",
     "UpdateLobbyData",
     "LobbyData" = UpdateLobbyData, // Deprecated
-    "PurchaseDiceById",
-    "AcquireDice" = PurchaseDiceById, // Deprecated
-    "Filler1",
-    "Filler2",
+    "StartGane",
+    "JoinLobby",
+    "GetFriends",
     "SetVisibleUsername",
-    "Filler4",
-    "Filler5",
-    "Filler6",
-    "Filler7",
+    "FriendInfo",
+    "GetMessages",
+    "SetMessage",
+    "UserSearch",
     "LobbyPlayer",
     "GetDashboard",
-    "Filler9",
+    "GetNextBattleReport",
     "GetPublicPlayerInfo",
     "GetAvatarList",
     "PurchaseAvatarById",
     "AcquireAvatar" = PurchaseAvatarById, // Deprecated
     "SetAvatar",
+    "GetNextAward",
+    "GetDiceList",
+    "PurchaseDiceById",
+    "AcquireDice" = PurchaseDiceById, // Deprecated
+    "SetDice",
     INVALID,
     LAST = INVALID
 };
@@ -67,8 +74,11 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<GetPublicPlayerInfoHandler>(MESSAGE_ID.GetPublicPlayerInfo, GetPublicPlayerInfoHandler);
         this.registerHandler<GetDashboardHandler>(MESSAGE_ID.GetDashboard, GetDashboardHandler);
         this.registerHandler<PurchaseAvatarByIdHandler>(MESSAGE_ID.PurchaseAvatarById, PurchaseAvatarByIdHandler);
+        this.registerHandler<PurchaseDiceByIdHandler>(MESSAGE_ID.PurchaseDiceById, PurchaseDiceByIdHandler);
         this.registerHandler<GetAvatarListHandler>(MESSAGE_ID.GetAvatarList, GetAvatarListHandler);
+        this.registerHandler<GetDiceListHandler>(MESSAGE_ID.GetDiceList, GetDiceListHandler);
         this.registerHandler<SetAvatarHandler>(MESSAGE_ID.SetAvatar, SetAvatarHandler);
+        this.registerHandler<SetDiceHandler>(MESSAGE_ID.SetDice, SetDiceHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {

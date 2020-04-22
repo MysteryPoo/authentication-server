@@ -49,7 +49,10 @@ const UserSchema : Schema = new Schema({
         default: uuid()
     },
     experience: Number,
-    level: Number,
+    level: {
+        type: Number,
+        default: 1
+    },
     credits: Number,
     premium: Number,
     conquest: Number,

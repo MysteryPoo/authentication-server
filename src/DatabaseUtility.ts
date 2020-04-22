@@ -1,4 +1,5 @@
 import AvatarModel, { IAvatar } from "./Models/Avatar.model";
+import DiceModel, { IDice } from "./Models/Dice.model";
 
 export class DatabaseUtility {
     public static fillAvatars() : void {
@@ -87,6 +88,24 @@ export class DatabaseUtility {
                 }));
 
                 AvatarModel.insertMany(avatarsToInsert);
+            }
+        });
+
+        DiceModel.find().exec( (err, diceList : Array<IDice>) => {
+            if (err) console.error(err);
+            if (diceList.length === 0) {
+                console.debug("No dice found in database... Filling with defaults.");
+                let diceToInsert : Array<IDice> = [];
+
+                diceToInsert.push(new DiceModel({
+                    requiredLevel: 1,
+                    creditCost: 10,
+                    premiumCost: 0,
+                    visible: true,
+                    uri: "dice-base-alpha-1.png"
+                }));
+
+                DiceModel.insertMany(diceToInsert);
             }
         });
 
