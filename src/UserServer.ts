@@ -22,6 +22,9 @@ import { SetAvatarHandler } from "./Protocol/GameClientInterface/Handlers/SetAva
 import { SetDiceHandler } from "./Protocol/GameClientInterface/Handlers/SetDice";
 import { GetDiceListHandler } from "./Protocol/GameClientInterface/Handlers/GetDiceList";
 import { PurchaseDiceByIdHandler } from "./Protocol/GameClientInterface/Handlers/PurchaseDiceById";
+import { GetFriendListHandler } from "./Protocol/GameClientInterface/Handlers/GetFriendList";
+import { FriendRequestHandler } from "./Protocol/GameClientInterface/Handlers/FriendRequest";
+import { UserSearchHandler } from "./Protocol/GameClientInterface/Handlers/UserSearch";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -36,7 +39,7 @@ export enum MESSAGE_ID {
     "JoinLobby",
     "GetFriends",
     "SetVisibleUsername",
-    "FriendInfo",
+    "FriendRequest",
     "GetMessages",
     "SetMessage",
     "UserSearch",
@@ -79,6 +82,9 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<GetDiceListHandler>(MESSAGE_ID.GetDiceList, GetDiceListHandler);
         this.registerHandler<SetAvatarHandler>(MESSAGE_ID.SetAvatar, SetAvatarHandler);
         this.registerHandler<SetDiceHandler>(MESSAGE_ID.SetDice, SetDiceHandler);
+        this.registerHandler<GetFriendListHandler>(MESSAGE_ID.GetFriends, GetFriendListHandler);
+        this.registerHandler<FriendRequestHandler>(MESSAGE_ID.FriendRequest, FriendRequestHandler);
+        this.registerHandler<UserSearchHandler>(MESSAGE_ID.UserSearch, UserSearchHandler);
         
         this.on('connection', this.onConnection);
         this.on('close', () => {
