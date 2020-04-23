@@ -7,6 +7,7 @@ import { IMessageBase } from "./Interfaces/IMessageBase";
 import { UpdateLobbyData } from "./Protocol/GameClientInterface/Messages/UpdateLobbyData";
 import { MESSAGE_ID } from "./UserServer";
 import { LobbyPlayer } from "./Protocol/GameClientInterface/Messages/LobbyPlayer";
+import http from "http";
 
 export class Lobby implements ILobby {
 
@@ -19,6 +20,24 @@ export class Lobby implements ILobby {
         this.clientList.push(host);
         this.gameVersion = host.gameVersion;
         this.update();
+
+        let options = {
+            socketPath: '/var/run/docker.sock',
+            //port: 2375,
+            path: '/containers/json',
+            method: 'GET'
+        }
+
+        const request = http.request(options, (response) => {
+            response.setEncoding('utf8');
+            response.on('data', data => {
+                console.debug(data);
+            });
+            response.on('error', err => {
+                console.error(err);
+            });
+        });
+        request.end();
     }
 
     addPlayer(client: IClient): ERROR {
