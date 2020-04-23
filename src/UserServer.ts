@@ -134,10 +134,6 @@ export class UserServer extends ServerBase implements IServer {
         client.destroy();
     }
 
-    private registerHandler<T extends IMessageHandler>(messageId : MESSAGE_ID, handler : {new(serverRef : IServer, messageId : MESSAGE_ID) : T; }) {
-        this.handlerList[messageId] = new handler(this, messageId);
-    }
-
     public authenticateClient(newId : string, client : IClient) : void {
         this.socketMap.set(newId, client);
         this.socketMap.delete(client.uid);

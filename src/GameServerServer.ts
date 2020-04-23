@@ -1,7 +1,8 @@
 
 import { IGameServerServer } from "./Interfaces/IGameServerServer";
 import { ILobby } from "./Interfaces/ILobby";
-import { Socket, Server as netServer } from "net";
+import { ServerBase } from "./Abstracts/ServerBase";
+import { PingHandler } from "./Protocol/Common/Ping";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -13,14 +14,15 @@ export enum MESSAGE_ID {
     LAST = INVALID
 };
 
-export class GameServerServer extends netServer implements IGameServerServer {
-    
-    authenticateClient(newId: string, client: import("./Interfaces/IClient").IClient): void {
-        throw new Error("Method not implemented.");
-    }
+export class GameServerServer extends ServerBase implements IGameServerServer {
     
     socketMap: Map<string, import("./Interfaces/IClient").IClient> = new Map();
     handlerList: import("./Interfaces/IMessageHandler").IMessageHandler[] = [];
+
+    constructor() {
+        super();
+        this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);
+    }
     
     findAvailableServer(): ILobby | undefined {
         throw new Error("Method not implemented.");
