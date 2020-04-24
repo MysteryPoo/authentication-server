@@ -2,15 +2,16 @@
 import { Socket } from "net";
 import { IServer } from "./Interfaces/IServer";
 import { v4 as uuid } from "uuid";
-import { IClient } from "./Interfaces/IClient";
-import { MESSAGE_ID } from "./UserServer";
+import { MESSAGE_ID } from "./GameServerServer";
+import { IGameServer, STATE } from "./Interfaces/IGameServer";
 
-export class Client implements IClient {
+export class GameServer implements IGameServer {
 
     public uid : string = uuid();
     public authenticated : boolean = false;
     public isReady : boolean = false;
     public gameVersion : number = 0;
+    public state: STATE = STATE.Dead;
 
     constructor(private socket : Socket, private serverRef : IServer) {
 

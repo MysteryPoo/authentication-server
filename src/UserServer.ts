@@ -4,12 +4,11 @@ import { Socket } from "net";
 import { Client } from "./Client";
 import { IClient } from "./Interfaces/IClient";
 import { IMessageHandler } from "./Interfaces/IMessageHandler";
-import { AuthenticationChallenge } from "./Protocol/GameClientInterface/Messages/Challenge";
+import { AuthenticationChallenge } from "./Protocol/Common/Challenge";
 import { PingHandler } from "./Protocol/Common/Ping";
 import { HandshakeHandler } from "./Protocol/GameClientInterface/Handlers/Handshake";
 import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/Handlers/SetVisibleUsername";
 import { ServerBase } from "./Abstracts/ServerBase";
-import { LobbyManager } from "./LobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
 import { NewLobbyHandler } from "./Protocol/GameClientInterface/Handlers/NewLobby";
 import { UpdateLobbyDataHandler } from "./Protocol/GameClientInterface/Handlers/UpdateLobbyData";
@@ -25,6 +24,7 @@ import { PurchaseDiceByIdHandler } from "./Protocol/GameClientInterface/Handlers
 import { GetFriendListHandler } from "./Protocol/GameClientInterface/Handlers/GetFriendList";
 import { FriendRequestHandler } from "./Protocol/GameClientInterface/Handlers/FriendRequest";
 import { UserSearchHandler } from "./Protocol/GameClientInterface/Handlers/UserSearch";
+import { ILobbyManager } from "./Interfaces/ILobbyManager";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -64,9 +64,7 @@ export class UserServer extends ServerBase implements IServer {
 
     public handlerList : Array<IMessageHandler> = [];
 
-    private port : number = 0;
-
-    constructor(readonly lobbyMgr : LobbyManager) {
+    constructor(readonly lobbyMgr : ILobbyManager) {
         super();
         this.registerHandler<HandshakeHandler>(MESSAGE_ID.Handshake, HandshakeHandler);
         this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);

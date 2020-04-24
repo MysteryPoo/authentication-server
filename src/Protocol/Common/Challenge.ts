@@ -1,6 +1,6 @@
 /// TODO : Rename to AuthenticationChallenge
-import { MessageBase } from "../../../Abstracts/MessageBase";
-import { BufferHelper } from "../../../BufferHelper";
+import { MessageBase } from "../../Abstracts/MessageBase";
+import { BufferHelper } from "../../BufferHelper";
 
 const size = 6;
 

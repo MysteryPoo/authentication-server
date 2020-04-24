@@ -7,6 +7,7 @@ import { IClient } from "../Interfaces/IClient";
 export abstract class ServerBase extends netServer implements IServer {
 
     protected socketMap: Map<string, IClient> = new Map();
+    protected port : number = 0;
 
     public handlerList: IMessageHandler[] = [];
 

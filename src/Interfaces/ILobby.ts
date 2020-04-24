@@ -16,6 +16,7 @@ export interface ILobby {
     clientList : Array<IClient>;
     numberOfLaunchAttempts : number;
     gameServer : IGameServer | null;
+    gameServerPassword : string;
     gameVersion : number;
 
     addPlayer(client : IClient) : ERROR;

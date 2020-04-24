@@ -1,12 +1,20 @@
 
-import { IGameServerServer } from "./Interfaces/IGameServerServer";
-import { ILobby } from "./Interfaces/ILobby";
 import { ServerBase } from "./Abstracts/ServerBase";
 import { PingHandler } from "./Protocol/Common/Ping";
+import { IMessageHandler } from "./Interfaces/IMessageHandler";
+import { BattleReportHandler } from "./Protocol/GameServerInterface/Handlers/BattleReport";
+import { AuthenticationChallenge } from "./Protocol/Common/Challenge";
+import { Socket } from "net";
+import { ILobbyManager } from "./Interfaces/ILobbyManager";
+import { UserServer } from "./UserServer";
+import { IGameServer } from "./Interfaces/IGameServer";
+import { GameServer } from "./GameServer";
+import { IServer } from "./Interfaces/IServer";
 
 export enum MESSAGE_ID {
     FIRST,
-	"Handshake" = FIRST,
+    "Challenge" = FIRST,
+	"Handshake",
 	"Ping",
 	"NotifyState",
     "BattleReport",
@@ -14,22 +22,38 @@ export enum MESSAGE_ID {
     LAST = INVALID
 };
 
-export class GameServerServer extends ServerBase implements IGameServerServer {
-    
-    socketMap: Map<string, import("./Interfaces/IClient").IClient> = new Map();
-    handlerList: import("./Interfaces/IMessageHandler").IMessageHandler[] = [];
+export class GameServerServer extends ServerBase implements IServer {
 
-    constructor() {
+    socketMap: Map<string, IGameServer> = new Map();
+    handlerList: IMessageHandler[] = [];
+
+    constructor(readonly lobbyMgr : ILobbyManager, readonly userServer : UserServer) {
         super();
         this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);
-    }
-    
-    findAvailableServer(): ILobby | undefined {
-        throw new Error("Method not implemented.");
+        this.registerHandler<BattleReportHandler>(MESSAGE_ID.BattleReport, BattleReportHandler);
+
+        this.on('connection', this.onConnection);
+        this.on('close', () => {
+            this.socketMap.clear();
+            console.log("Server no longer listening...");
+        });
+        this.on('listening', () => {
+            console.log("Listening on port: " + this.port);
+        });
     }
 
-    removeClient(client: import("./Interfaces/IClient").IClient): void {
-        throw new Error("Method not implemented.");
+    removeClient(server: IGameServer): void {
+        this.socketMap.delete(server.uid);
+        server.destroy();
+    }
+
+    private onConnection(rawSocket : Socket) {
+        const server = new GameServer(rawSocket, this);
+        this.socketMap.set(server.uid, server);
+
+        let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
+        message.salt = "ABCD";
+        server.write(message.serialize());
     }
 
 }

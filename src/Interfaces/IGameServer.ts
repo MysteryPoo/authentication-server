@@ -1,5 +1,5 @@
 
-import { ISocket } from "./ISocket";
+import { IClient } from "./IClient";
 
 export enum STATE {
 	"Available",
@@ -8,10 +8,6 @@ export enum STATE {
 	"Dead"
 };
 
-export interface IGameServer extends ISocket {
-    domain : string;
-	port : number;
-	webSocketPort : number;
+export interface IGameServer extends IClient {
 	state : STATE;
-	gameVersion : number;
 }

@@ -14,6 +14,7 @@ export class Lobby implements ILobby {
     clientList : IClient[] = [];
     numberOfLaunchAttempts : number = 0;
     gameServer : IGameServer | null = null;
+    gameServerPassword : string = "TEST";
     gameVersion : number = 0;
 
     constructor(private lobbyMgrRef : ILobbyManager, host : IClient, public isPublic : boolean, public maxPlayers : number) {
