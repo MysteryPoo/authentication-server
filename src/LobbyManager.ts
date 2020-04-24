@@ -1,15 +1,15 @@
 
 import { ILobbyManager, QUEUE_ERROR } from "./Interfaces/ILobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
-import { IClient } from "./Interfaces/IClient";
 import { Lobby } from "./Lobby";
+import { IUserClient } from "./Interfaces/IUserClient";
 
 export class LobbyManager implements ILobbyManager {
 
     lobbyList: ILobby[] = [];
     lobbyQueue: ILobby[] = [];
 
-    createLobby(host: IClient, isPublic: boolean, maxPlayers: number): ILobby {
+    createLobby(host: IUserClient, isPublic: boolean, maxPlayers: number): ILobby {
         
         host.isReady = false;
         let newLobby : ILobby = new Lobby(this, host, isPublic, maxPlayers);
@@ -18,7 +18,7 @@ export class LobbyManager implements ILobbyManager {
 
     }
 
-    getLobbyOfClient(client: IClient): ILobby | undefined {
+    getLobbyOfClient(client: IUserClient): ILobby | undefined {
         return this.lobbyList.find( (element) => {
 			return element.containsPlayer(client);
 		});

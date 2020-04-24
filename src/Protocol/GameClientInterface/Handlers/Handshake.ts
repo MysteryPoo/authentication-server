@@ -1,16 +1,16 @@
 
 import { MessageHandlerBase } from "../../../Abstracts/MessageHandlerBase";
 import { Handshake } from "../Messages/Handshake";
-import { IClient } from "../../../Interfaces/IClient";
 import { ObjectId } from "mongodb";
 import UserModel, { IUser } from "../../../Models/User.model";
 import crypto from "crypto";
 import { v4 as uuid } from "uuid";
 import { UserServer } from "../../../UserServer";
+import { IUserClient } from "../../../Interfaces/IUserClient";
 
 export class HandshakeHandler extends MessageHandlerBase {
 
-    handle(buffer: Buffer, myClient: IClient): boolean {
+    handle(buffer: Buffer, myClient: IUserClient): boolean {
         let message : Handshake = new Handshake(this.messageId, buffer);
         let disconnect = false;
 

@@ -1,7 +1,7 @@
 
 import { IMessageHandler } from "../Interfaces/IMessageHandler";
 import { IServer } from "../Interfaces/IServer";
-import { IClient } from "../Interfaces/IClient";
+import { ISocket } from "../Interfaces/ISocket";
 
 export abstract class MessageHandlerBase implements IMessageHandler {
 
@@ -9,6 +9,6 @@ export abstract class MessageHandlerBase implements IMessageHandler {
 
     }
 
-    abstract handle(buffer: Buffer, myClient: IClient): boolean;
+    abstract handle(buffer: Buffer, mySocket: ISocket): boolean;
     
 }

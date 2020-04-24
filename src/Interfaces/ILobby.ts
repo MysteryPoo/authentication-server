@@ -1,6 +1,6 @@
 
-import { IClient } from "./IClient";
 import { IGameServer } from "./IGameServer";
+import { IUserClient } from "./IUserClient";
 
 export enum ERROR {
     OK,
@@ -13,15 +13,15 @@ export interface ILobby {
 
     isPublic : boolean;
     maxPlayers : number;
-    clientList : Array<IClient>;
+    clientList : Array<IUserClient>;
     numberOfLaunchAttempts : number;
     gameServer : IGameServer | null;
     gameServerPassword : string;
     gameVersion : number;
 
-    addPlayer(client : IClient) : ERROR;
-    containsPlayer(client : IClient) : boolean;
-    removePlayer(client: IClient) : boolean;
+    addPlayer(client : IUserClient) : ERROR;
+    containsPlayer(client : IUserClient) : boolean;
+    removePlayer(client: IUserClient) : boolean;
     isReadyToQueue() : boolean;
     requestGameServer() : void; // This will change
     getAvailableSlots() : number;

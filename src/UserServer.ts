@@ -1,8 +1,7 @@
 
 import { IServer } from "./Interfaces/IServer";
 import { Socket } from "net";
-import { Client } from "./Client";
-import { IClient } from "./Interfaces/IClient";
+import { UserClient } from "./UserClient";
 import { IMessageHandler } from "./Interfaces/IMessageHandler";
 import { AuthenticationChallenge } from "./Protocol/Common/Challenge";
 import { PingHandler } from "./Protocol/Common/Ping";
@@ -25,6 +24,7 @@ import { GetFriendListHandler } from "./Protocol/GameClientInterface/Handlers/Ge
 import { FriendRequestHandler } from "./Protocol/GameClientInterface/Handlers/FriendRequest";
 import { UserSearchHandler } from "./Protocol/GameClientInterface/Handlers/UserSearch";
 import { ILobbyManager } from "./Interfaces/ILobbyManager";
+import { IUserClient } from "./Interfaces/IUserClient";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -115,7 +115,7 @@ export class UserServer extends ServerBase implements IServer {
     }
 
     private onConnection( rawSocket : Socket) {
-        const client = new Client(rawSocket, this);
+        const client : UserClient = new UserClient(rawSocket, this);
         this.socketMap.set(client.uid, client);
 
         let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
@@ -123,7 +123,7 @@ export class UserServer extends ServerBase implements IServer {
         client.write(message.serialize());
     }
 
-    public removeClient(client : IClient) : void {
+    public removeClient(client : IUserClient) : void {
         let lobby : ILobby | undefined = this.lobbyMgr.getLobbyOfClient(client);
         if (lobby) {
             lobby.removePlayer(client);
@@ -132,7 +132,7 @@ export class UserServer extends ServerBase implements IServer {
         client.destroy();
     }
 
-    public authenticateClient(newId : string, client : IClient) : void {
+    public authenticateClient(newId : string, client : IUserClient) : void {
         this.socketMap.set(newId, client);
         this.socketMap.delete(client.uid);
         client.authenticated = true;
@@ -142,8 +142,8 @@ export class UserServer extends ServerBase implements IServer {
         return this.socketMap.size;
     }
 
-    public getClientById(id : string) : IClient | undefined {
-        return this.socketMap.get(id);
+    public getClientById(id : string) : IUserClient | undefined {
+        return this.socketMap.get(id) as IUserClient;
     }
 
 }

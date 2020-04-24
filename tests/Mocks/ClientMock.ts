@@ -1,25 +1,31 @@
 
-import { IClient } from "../../src/Interfaces/IClient";
+import { IUserClient } from "../../src/Interfaces/IUserClient";
 import { IServer } from "../../src/Interfaces/IServer";
 import { SocketMock } from "./SocketMock";
-import { v4 as uuid } from "uuid";
 
-export class ClientMock implements IClient {
-    
-    public uid: string = uuid();
+export class ClientMock implements IUserClient {
+
+    public uid: string = "";
     public authenticated: boolean = false;
-    public isReady : boolean = false;
-    public gameVersion : number = 0;
+    public isReady: boolean = false;
+    public gameVersion: number = 0;
 
     constructor(private socket : SocketMock, private serverRef : IServer) {
-        
+
     }
 
-    public write(buffer : Buffer) : boolean {
-        return this.socket.write(buffer);
+    write(buffer: Buffer): boolean {
+        throw new Error("Method not implemented.");
+    }
+    destroy(): void {
+        throw new Error("Method not implemented.");
     }
 
-    public destroy() : void {
-        this.socket.destroy();
+    ValidateMessageId(identifier: number): boolean {
+        throw new Error("Method not implemented.");
     }
+    GetMessageTypeString(identifier: number): string {
+        throw new Error("Method not implemented.");
+    }
+
 }

@@ -1,18 +1,15 @@
 
 import { Socket } from "net";
-import { IServer } from "./Interfaces/IServer";
+import { IServer } from "../Interfaces/IServer";
 import { v4 as uuid } from "uuid";
-import { IClient } from "./Interfaces/IClient";
-import { MESSAGE_ID } from "./UserServer";
+import { IClient } from "../Interfaces/IClient";
 
-export class Client implements IClient {
+export abstract class ClientBase implements IClient {
 
     public uid : string = uuid();
     public authenticated : boolean = false;
-    public isReady : boolean = false;
-    public gameVersion : number = 0;
 
-    constructor(private socket : Socket, private serverRef : IServer) {
+    constructor(private socket : Socket, protected serverRef : IServer) {
 
         this.socket.on('data', (data : Buffer) => {
             let tell : number = 0;
@@ -22,13 +19,11 @@ export class Client implements IClient {
                 let messageSize : number = data.readUInt32LE(tell + 1);
                 let messageData : Buffer = data.slice(tell + 5, tell + messageSize);
 
-                let messageType : MESSAGE_ID;
-                if (rawIdentifier >= MESSAGE_ID.FIRST && rawIdentifier <= MESSAGE_ID.LAST) {
-                    messageType = rawIdentifier;
-                    if (this.serverRef.handlerList[messageType]) {
-                        this.serverRef.handlerList[messageType].handle(messageData, this);
+                if (this.ValidateMessageId(rawIdentifier)) {
+                    if (this.serverRef.handlerList[rawIdentifier]) {
+                        this.serverRef.handlerList[rawIdentifier].handle(messageData, this);
                     } else {
-                        console.error(`No handler registered for this messageType: ${MESSAGE_ID[messageType]}(${messageType})`);
+                        console.error(`No handler registered for this messageType: ${this.GetMessageTypeString(rawIdentifier)}(${rawIdentifier})`);
                     }
                 } else {
                     console.error(`Unknown messageType: ${rawIdentifier}`);
@@ -49,6 +44,10 @@ export class Client implements IClient {
             this.serverRef.removeClient(this);
         });
     }
+
+    abstract ValidateMessageId(identifier : number): boolean;
+
+    abstract GetMessageTypeString(identifier : number) : string;
 
     public write(buffer : Buffer) : boolean {
         return this.socket.write(buffer);

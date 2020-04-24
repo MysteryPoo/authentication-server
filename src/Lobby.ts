@@ -1,23 +1,23 @@
 
 import { ILobby, ERROR } from "./Interfaces/ILobby";
 import { ILobbyManager } from "./Interfaces/ILobbyManager";
-import { IClient } from "./Interfaces/IClient";
 import { IGameServer } from "./Interfaces/IGameServer";
 import { IMessageBase } from "./Interfaces/IMessageBase";
 import { UpdateLobbyData } from "./Protocol/GameClientInterface/Messages/UpdateLobbyData";
 import { MESSAGE_ID } from "./UserServer";
 import { LobbyPlayer } from "./Protocol/GameClientInterface/Messages/LobbyPlayer";
 import http from "http";
+import { IUserClient } from "./Interfaces/IUserClient";
 
 export class Lobby implements ILobby {
 
-    clientList : IClient[] = [];
+    clientList : IUserClient[] = [];
     numberOfLaunchAttempts : number = 0;
     gameServer : IGameServer | null = null;
     gameServerPassword : string = "TEST";
     gameVersion : number = 0;
 
-    constructor(private lobbyMgrRef : ILobbyManager, host : IClient, public isPublic : boolean, public maxPlayers : number) {
+    constructor(private lobbyMgrRef : ILobbyManager, host : IUserClient, public isPublic : boolean, public maxPlayers : number) {
         this.clientList.push(host);
         this.gameVersion = host.gameVersion;
         this.update();
@@ -41,7 +41,7 @@ export class Lobby implements ILobby {
         request.end();
     }
 
-    addPlayer(client: IClient): ERROR {
+    addPlayer(client: IUserClient): ERROR {
         if (this.clientList.length === this.maxPlayers) {
             return ERROR.INSUFFICIENT_SPACE;
         }
@@ -59,14 +59,14 @@ export class Lobby implements ILobby {
         return ERROR.OK;
     }
 
-    containsPlayer(client: IClient): boolean {
+    containsPlayer(client: IUserClient): boolean {
         let test = this.clientList.find( (element) => {
             return element.uid === client.uid;
         });
         return test != undefined;
     }
 
-    removePlayer(client: IClient): boolean {
+    removePlayer(client: IUserClient): boolean {
         let index = this.clientList.findIndex( (element) => {
 			return element.uid === client.uid;
 		});
