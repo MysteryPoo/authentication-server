@@ -22,6 +22,11 @@ export class BufferHelper {
         this.tell += 4;
     }
 
+    public writeBigUInt64LE(value : bigint) : void {
+        this.buffer.writeBigUInt64LE(value, this.tell);
+        this.tell += 8;
+    }
+
     public writeString(data : string) : void {
         let length = Buffer.byteLength(data, 'utf-8');
         this.buffer.write(data, this.tell, length, 'utf-8');
@@ -43,6 +48,12 @@ export class BufferHelper {
     public readUInt32LE() : number {
         let returnValue : number = this.buffer.readUInt32LE(this.tell);
         this.tell += 4;
+        return returnValue;
+    }
+
+    public readBigUInt64LE() : bigint {
+        let returnValue : bigint = this.buffer.readBigInt64LE(this.tell);
+        this.tell += 8;
         return returnValue;
     }
 
