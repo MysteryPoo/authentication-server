@@ -14,6 +14,7 @@ export class Lobby implements ILobby {
     clientList : IUserClient[] = [];
     numberOfLaunchAttempts : number = 0;
     gameServer : IGameServer | null = null;
+    gameServerId : string = "";
     gameServerPassword : string = "TEST";
     gameVersion : number = 0;
 
@@ -22,11 +23,56 @@ export class Lobby implements ILobby {
         this.gameVersion = host.gameVersion;
         this.update();
 
+        this.createContainer();
+    }
+
+    private createContainer() : void {
+        let data = JSON.stringify({
+            "Image": "ubuntu",
+            "Cmd" : [
+                "date"
+            ],
+            "HostConfig" : {
+                "AutoRemove" : true
+            }
+        });
+
         let options = {
             socketPath: '/var/run/docker.sock',
-            //port: 2375,
-            path: '/containers/json',
-            method: 'GET'
+            path: '/containers/create',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            }
+        }
+
+        const request = http.request(options, (response) => {
+            response.setEncoding('utf8');
+            response.on('data', data => {
+                console.debug(data);
+                this.gameServerId = JSON.parse(data).Id;
+                this.startContainer(this.gameServerId);
+            });
+            response.on('error', err => {
+                console.error(err);
+            });
+        });
+
+        request.write(data);
+        request.end();
+    }
+
+    private startContainer(id : string) {
+        console.debug(id);
+        let options = {
+            socketPath: '/var/run/docker.sock',
+            path: `/containers/${id}/start`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': 0
+            }
         }
 
         const request = http.request(options, (response) => {
@@ -38,6 +84,7 @@ export class Lobby implements ILobby {
                 console.error(err);
             });
         });
+
         request.end();
     }
 

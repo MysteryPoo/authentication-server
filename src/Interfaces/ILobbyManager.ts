@@ -4,6 +4,7 @@ import { IClient } from "./IClient";
 
 export enum QUEUE_ERROR {
     OK,
+    NO_SERVER_AVAILABLE,
     ALREADY_STARTED,
     INSUFFICIENT_PLAYERS,
     PLAYERS_NOT_READY

@@ -25,4 +25,5 @@ const server : UserServer = new UserServer(lobbyManager);
 server.start(gameClientPort);
 
 const gameServerManager : GameServerServer = new GameServerServer(lobbyManager, server);
+gameServerManager.start(gameServerPort);
 

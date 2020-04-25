@@ -14,7 +14,7 @@ export class HandshakeHandler extends MessageHandlerBase {
 
         if (message.valid) {
             let gameServerServer : GameServerServer = this.serverRef as GameServerServer;
-            myClient.state = gsState.Available;
+            myClient.state = gsState.Ready;
             myClient.authenticated = true;
             
             let host : IClient | undefined = gameServerServer.userServer.getClientById(message.playerIdList[0]);

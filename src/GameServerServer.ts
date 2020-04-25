@@ -10,6 +10,7 @@ import { UserServer } from "./UserServer";
 import { IGameServer } from "./Interfaces/IGameServer";
 import { GameServer } from "./GameServer";
 import { IServer } from "./Interfaces/IServer";
+import { HandshakeHandler } from "./Protocol/GameServerInterface/Handlers/Handshake";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -31,6 +32,7 @@ export class GameServerServer extends ServerBase implements IServer {
         super();
         this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);
         this.registerHandler<BattleReportHandler>(MESSAGE_ID.BattleReport, BattleReportHandler);
+        this.registerHandler<HandshakeHandler>(MESSAGE_ID.Handshake, HandshakeHandler);
 
         this.on('connection', this.onConnection);
         this.on('close', () => {
@@ -54,6 +56,26 @@ export class GameServerServer extends ServerBase implements IServer {
         let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
         message.salt = "ABCD";
         server.write(message.serialize());
+    }
+
+    public async start(port: number = 8081): Promise<boolean> {
+        console.log("Server starting...");
+        return new Promise<boolean>( (resolve, reject) => {
+            this.port = port;
+            this.listen( {port: port, host: "0.0.0.0"}, () => {
+                resolve(true);
+            });
+        });
+    }
+
+    public async stop(): Promise<boolean> {
+        console.log("Stopping server...");
+        return new Promise<boolean>( (resolve, reject) => {
+            this.close(() => {
+                console.log("Server shutdown.");
+                resolve(true);
+            });
+        });
     }
 
 }

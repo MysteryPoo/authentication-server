@@ -3,6 +3,7 @@ import { ILobbyManager, QUEUE_ERROR } from "./Interfaces/ILobbyManager";
 import { ILobby } from "./Interfaces/ILobby";
 import { Lobby } from "./Lobby";
 import { IUserClient } from "./Interfaces/IUserClient";
+import { STATE } from "./Interfaces/IGameServer";
 
 export class LobbyManager implements ILobbyManager {
 
@@ -45,7 +46,11 @@ export class LobbyManager implements ILobbyManager {
     }
 
     addToQueue(lobby: ILobby): QUEUE_ERROR {
-        if (lobby.gameServer !== null) {
+        if (lobby.gameServer === null || lobby.gameServer.state === STATE.Offline) {
+            return QUEUE_ERROR.NO_SERVER_AVAILABLE;
+        }
+
+        if (lobby.gameServer.state === STATE.Started) {
             return QUEUE_ERROR.ALREADY_STARTED;
         }
 

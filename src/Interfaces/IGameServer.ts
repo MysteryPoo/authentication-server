@@ -2,12 +2,12 @@
 import { IClient } from "./IClient";
 
 export enum STATE {
-	"Available",
-	"Notified",
-	"Ready",
-	"Dead"
+	Offline,
+	Ready,
+	Started
 };
 
 export interface IGameServer extends IClient {
 	state : STATE;
+	containerId : string;
 }
