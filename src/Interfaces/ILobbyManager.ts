@@ -17,6 +17,7 @@ export interface ILobbyManager {
 
     createLobby(host : IClient, isPublic : boolean, maxPlayers : number) : ILobby;
     getLobbyOfClient(client : IClient) : ILobby | undefined;
+    getLobbyOfClientId(clientId : string) : ILobby | undefined;
     removeLobby(lobby : ILobby) : boolean;
     addToQueue(lobby : ILobby) : QUEUE_ERROR;
     removeFromQueue(lobby : ILobby) : boolean;

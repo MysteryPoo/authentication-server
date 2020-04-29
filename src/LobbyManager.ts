@@ -25,6 +25,12 @@ export class LobbyManager implements ILobbyManager {
 		});
     }
 
+    getLobbyOfClientId(clientId : string) : ILobby | undefined {
+        return this.lobbyList.find( (element) => {
+            return element.containsPlayerId(clientId);
+        });
+    }
+
     removeLobby(lobby: ILobby): boolean {
         // Remove from queue as well, if applicable
         this.removeFromQueue(lobby);
@@ -46,11 +52,8 @@ export class LobbyManager implements ILobbyManager {
     }
 
     addToQueue(lobby: ILobby): QUEUE_ERROR {
-        if (lobby.gameServer === null || lobby.gameServer.state === STATE.Offline) {
-            return QUEUE_ERROR.NO_SERVER_AVAILABLE;
-        }
 
-        if (lobby.gameServer.state === STATE.Started) {
+        if (lobby.gameServer && lobby.gameServer.state === STATE.Started) {
             return QUEUE_ERROR.ALREADY_STARTED;
         }
 

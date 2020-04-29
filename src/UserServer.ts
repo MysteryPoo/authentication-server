@@ -25,6 +25,7 @@ import { FriendRequestHandler } from "./Protocol/GameClientInterface/Handlers/Fr
 import { UserSearchHandler } from "./Protocol/GameClientInterface/Handlers/UserSearch";
 import { ILobbyManager } from "./Interfaces/ILobbyManager";
 import { IUserClient } from "./Interfaces/IUserClient";
+import { StartGameHandler } from "./Protocol/GameClientInterface/Handlers/StartGame";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -35,7 +36,7 @@ export enum MESSAGE_ID {
     "NewLobby",
     "UpdateLobbyData",
     "LobbyData" = UpdateLobbyData, // Deprecated
-    "StartGane",
+    "StartGame",
     "JoinLobby",
     "GetFriends",
     "SetVisibleUsername",
@@ -83,6 +84,8 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<GetFriendListHandler>(MESSAGE_ID.GetFriends, GetFriendListHandler);
         this.registerHandler<FriendRequestHandler>(MESSAGE_ID.FriendRequest, FriendRequestHandler);
         this.registerHandler<UserSearchHandler>(MESSAGE_ID.UserSearch, UserSearchHandler);
+        this.registerHandler<StartGameHandler>(MESSAGE_ID.StartGame, StartGameHandler);
+
         
         this.on('connection', this.onConnection);
         this.on('close', () => {
@@ -114,7 +117,7 @@ export class UserServer extends ServerBase implements IServer {
         });
     }
 
-    private onConnection( rawSocket : Socket) {
+    private onConnection( rawSocket : Socket) : void {
         const client : UserClient = new UserClient(rawSocket, this);
         this.socketMap.set(client.uid, client);
 

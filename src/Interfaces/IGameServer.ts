@@ -2,6 +2,7 @@
 import { IClient } from "./IClient";
 
 export enum STATE {
+	Requested,
 	Offline,
 	Ready,
 	Started

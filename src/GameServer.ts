@@ -13,7 +13,7 @@ export class GameServer extends ClientBase implements IGameServer {
         return MESSAGE_ID[identifier];
     }
 
-    public state: STATE = STATE.Offline;
+    public state: STATE = STATE.Requested;
     public containerId : string = "";
 
 }

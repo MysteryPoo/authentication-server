@@ -8,32 +8,43 @@ import { MESSAGE_ID } from "./UserServer";
 import { LobbyPlayer } from "./Protocol/GameClientInterface/Messages/LobbyPlayer";
 import http from "http";
 import { IUserClient } from "./Interfaces/IUserClient";
+import { StartGame } from "./Protocol/GameClientInterface/Messages/StartGame";
 
 export class Lobby implements ILobby {
 
     clientList : IUserClient[] = [];
     numberOfLaunchAttempts : number = 0;
     gameServer : IGameServer | null = null;
-    gameServerId : string = "";
+    private gameServerId : string = "";
+    gameServerPort : number = 0;
     gameServerPassword : string = "TEST";
     gameVersion : number = 0;
+    private requestedGameServer = false;
 
     constructor(private lobbyMgrRef : ILobbyManager, host : IUserClient, public isPublic : boolean, public maxPlayers : number) {
         this.clientList.push(host);
         this.gameVersion = host.gameVersion;
         this.update();
-
-        this.createContainer();
     }
 
     private createContainer() : void {
         let data = JSON.stringify({
-            "Image": "ubuntu",
-            "Cmd" : [
-                "date"
+            "Image": "farkleinspacegameserver:latest",
+            "Env" : [
+                `AUTHIP=host.docker.internal`,
+                `HOST=${this.clientList[0].uid}`,
+                `PASSWORD=${this.gameServerPassword}`,
+                `TOKEN=1234`
             ],
             "HostConfig" : {
-                "AutoRemove" : true
+                "AutoRemove" : false,
+                "PortBindings" : {
+                    "9000/tcp" : [
+                        {
+                            "HostPort" : ""
+                        }
+                    ]
+                }
             }
         });
 
@@ -52,7 +63,7 @@ export class Lobby implements ILobby {
             response.on('data', data => {
                 console.debug(data);
                 this.gameServerId = JSON.parse(data).Id;
-                this.startContainer(this.gameServerId);
+                this.startContainer();
             });
             response.on('error', err => {
                 console.error(err);
@@ -63,11 +74,10 @@ export class Lobby implements ILobby {
         request.end();
     }
 
-    private startContainer(id : string) {
-        console.debug(id);
+    private async startContainer() : Promise<void> {
         let options = {
             socketPath: '/var/run/docker.sock',
-            path: `/containers/${id}/start`,
+            path: `/containers/${this.gameServerId}/start`,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,7 +88,28 @@ export class Lobby implements ILobby {
         const request = http.request(options, (response) => {
             response.setEncoding('utf8');
             response.on('data', data => {
-                console.debug(data);
+                return this.getContainerPort();
+            });
+            response.on('error', err => {
+                console.error(err);
+            });
+        });
+
+        request.end();
+    }
+
+    private async getContainerPort() : Promise<void> {
+        let options = {
+            socketPath: '/var/run/docker.sock',
+            path: `/containers/${this.gameServerId}/json`,
+            method: 'GET'
+        }
+
+        const request = http.request(options, (response) => {
+            response.setEncoding('utf8');
+            response.on('data', data => {
+                this.gameServerPort = JSON.parse(data).NetworkSettings.Ports["9000/tcp"].HostPort;
+                return;
             });
             response.on('error', err => {
                 console.error(err);
@@ -113,6 +144,13 @@ export class Lobby implements ILobby {
         return test != undefined;
     }
 
+    containsPlayerId(clientId : string) : boolean {
+        let test = this.clientList.find( (e) => {
+            return e.uid === clientId;
+        });
+        return test != undefined;
+    }
+
     removePlayer(client: IUserClient): boolean {
         let index = this.clientList.findIndex( (element) => {
 			return element.uid === client.uid;
@@ -135,8 +173,13 @@ export class Lobby implements ILobby {
 		return isReady;
     }
 
-    requestGameServer(): void {
-        throw new Error("Method not implemented.");
+    async requestGameServer() : Promise<void> {
+        if (this.requestedGameServer) {
+            return;
+        } else {
+            this.requestedGameServer = true;
+            return this.createContainer();
+        }
     }
 
     getAvailableSlots() : number {
@@ -146,6 +189,16 @@ export class Lobby implements ILobby {
     setPublic(isPublic : boolean) {
         this.isPublic = isPublic;
         this.update();
+    }
+
+    start() : void {
+        let response : StartGame = new StartGame(MESSAGE_ID.StartGame);
+        response.ip = "127.0.0.1";
+        response.port = this.gameServerPort;
+        response.token = 1234;
+        for (let client of this.clientList) {
+            client.write(response.serialize());
+        }
     }
 
     update() : void {

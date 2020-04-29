@@ -17,24 +17,23 @@ export class HandshakeHandler extends MessageHandlerBase {
             myClient.state = gsState.Ready;
             myClient.authenticated = true;
             
-            let host : IClient | undefined = gameServerServer.userServer.getClientById(message.playerIdList[0]);
-            if (host) {
-                let lobby : ILobby | undefined = gameServerServer.lobbyMgr.getLobbyOfClient(host);
-                if (lobby && message.gameServerPassword === lobby.gameServerPassword) {
-                    lobby.gameServer = myClient;
-                    lobby.update();
-                } else {
-                    disconnect = true;
-                }
+            let lobby : ILobby | undefined = gameServerServer.lobbyMgr.getLobbyOfClientId(message.playerIdList[0]);
+            if (lobby && message.gameServerPassword === lobby.gameServerPassword) {
+                lobby.gameServer = myClient;
+                lobby.start();
+                console.debug("Game server connected and is good to go.");
             } else {
+                console.debug("Game server provided incorrect password");
                 disconnect = true;
             }
         } else {
+            console.debug("Gameserver provided invalid Handshake message");
             disconnect = true;
         }
 
         if (disconnect) {
-            this.serverRef.removeClient(myClient);
+            //this.serverRef.removeClient(myClient);
+            myClient.destroy();
             return false;
         }
 

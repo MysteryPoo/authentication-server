@@ -13,7 +13,6 @@ export abstract class ClientBase implements IClient {
 
         this.socket.on('data', (data : Buffer) => {
             let tell : number = 0;
-            let success : boolean = false;
             while(tell < data.byteLength) {
                 let rawIdentifier : number = data.readUInt8(tell);
                 let messageSize : number = data.readUInt32LE(tell + 1);
@@ -31,7 +30,9 @@ export abstract class ClientBase implements IClient {
                 tell += messageSize;
             }
             //console.log(data);
-            return success;
+        })
+        .on('error', (err : Error) => {
+            console.error(err);
         })
         .on('close', (had_error) => {
             if (had_error) {

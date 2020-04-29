@@ -6,7 +6,6 @@ import { BattleReportHandler } from "./Protocol/GameServerInterface/Handlers/Bat
 import { AuthenticationChallenge } from "./Protocol/Common/Challenge";
 import { Socket } from "net";
 import { ILobbyManager } from "./Interfaces/ILobbyManager";
-import { UserServer } from "./UserServer";
 import { IGameServer } from "./Interfaces/IGameServer";
 import { GameServer } from "./GameServer";
 import { IServer } from "./Interfaces/IServer";
@@ -28,7 +27,7 @@ export class GameServerServer extends ServerBase implements IServer {
     socketMap: Map<string, IGameServer> = new Map();
     handlerList: IMessageHandler[] = [];
 
-    constructor(readonly lobbyMgr : ILobbyManager, readonly userServer : UserServer) {
+    constructor(readonly lobbyMgr : ILobbyManager) {
         super();
         this.registerHandler<PingHandler>(MESSAGE_ID.Ping, PingHandler);
         this.registerHandler<BattleReportHandler>(MESSAGE_ID.BattleReport, BattleReportHandler);
@@ -49,7 +48,7 @@ export class GameServerServer extends ServerBase implements IServer {
         server.destroy();
     }
 
-    private onConnection(rawSocket : Socket) {
+    private onConnection(rawSocket : Socket) : void {
         const server = new GameServer(rawSocket, this);
         this.socketMap.set(server.uid, server);
 

@@ -21,6 +21,9 @@ export class Handshake extends MessageBase {
             this.gameServerPassword = helper.readString(passLength);
 
             let numPlayers : number = helper.readUInt8();
+            if (this.playerIdList === undefined) {
+                this.playerIdList = [];
+            }
             for (let p = 0; p < numPlayers; ++p) {
                 let idLength : number = helper.readUInt8();
                 this.playerIdList.push(helper.readString(idLength));
@@ -28,6 +31,7 @@ export class Handshake extends MessageBase {
 
             this.valid = true;
         } catch (e) {
+            console.error(e);
             this.valid = false;
         }
     }
