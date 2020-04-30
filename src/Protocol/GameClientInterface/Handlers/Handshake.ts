@@ -7,6 +7,7 @@ import crypto from "crypto";
 import { v4 as uuid } from "uuid";
 import { UserServer } from "../../../UserServer";
 import { IUserClient } from "../../../Interfaces/IUserClient";
+import MessageModel, { IMessage } from "../../../Models/Message.model";
 
 export class HandshakeHandler extends MessageHandlerBase {
 
@@ -32,7 +33,17 @@ export class HandshakeHandler extends MessageHandlerBase {
                     myClient.gameVersion = message.gameVersion;
 
                     user.password = crypto.createHmac('sha1', user.salt).update(user.password).digest('hex');
-                    user.save();
+                    new MessageModel({
+                        sender: user.id,
+                        senderName: "System",
+                        isUnread: true,
+                        recipient: user.id,
+                        subject: "Welcome!",
+                        message: "Welcome to Farkle in Space!\nHave fun!!!"
+                    }).save().then( (message : IMessage) => {
+                        user.messageList.push(message.id);
+                        user.save();
+                    });
 
                     let server : UserServer = this.serverRef as UserServer;
                     server.authenticateClient(user.id, myClient);

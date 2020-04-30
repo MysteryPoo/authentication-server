@@ -26,6 +26,9 @@ import { UserSearchHandler } from "./Protocol/GameClientInterface/Handlers/UserS
 import { ILobbyManager } from "./Interfaces/ILobbyManager";
 import { IUserClient } from "./Interfaces/IUserClient";
 import { StartGameHandler } from "./Protocol/GameClientInterface/Handlers/StartGame";
+import { GetMessagesHandler } from "./Protocol/GameClientInterface/Handlers/GetMessages";
+import { MessageInfoHandler } from "./Protocol/GameClientInterface/Handlers/MessageInfo";
+import { SetMessageStateHandler } from "./Protocol/GameClientInterface/Handlers/SetMessageState";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -85,6 +88,9 @@ export class UserServer extends ServerBase implements IServer {
         this.registerHandler<FriendRequestHandler>(MESSAGE_ID.FriendRequest, FriendRequestHandler);
         this.registerHandler<UserSearchHandler>(MESSAGE_ID.UserSearch, UserSearchHandler);
         this.registerHandler<StartGameHandler>(MESSAGE_ID.StartGame, StartGameHandler);
+        this.registerHandler<GetMessagesHandler>(MESSAGE_ID.GetMessages, GetMessagesHandler);
+        this.registerHandler<MessageInfoHandler>(MESSAGE_ID.MessageInfo, MessageInfoHandler);
+        this.registerHandler<SetMessageStateHandler>(MESSAGE_ID.SetMessage, SetMessageStateHandler);
 
         
         this.on('connection', this.onConnection);
