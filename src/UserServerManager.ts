@@ -2,9 +2,8 @@
 import { IServer } from "./Interfaces/IServer";
 import { Socket } from "net";
 import { UserClient } from "./UserClient";
-import { IMessageHandler } from "./Interfaces/IMessageHandler";
 import { AuthenticationChallenge } from "./Protocol/Common/Challenge";
-import { PingHandler } from "./Protocol/Common/Ping";
+import { PingHandler } from "./Protocol/Common/PingHandler";
 import { HandshakeHandler } from "./Protocol/GameClientInterface/Handlers/Handshake";
 import { SetVisibleUsernameHandler } from "./Protocol/GameClientInterface/Handlers/SetVisibleUsername";
 import { ServerBase } from "./Abstracts/ServerBase";
@@ -29,6 +28,8 @@ import { StartGameHandler } from "./Protocol/GameClientInterface/Handlers/StartG
 import { GetMessagesHandler } from "./Protocol/GameClientInterface/Handlers/GetMessages";
 import { MessageInfoHandler } from "./Protocol/GameClientInterface/Handlers/MessageInfo";
 import { SetMessageStateHandler } from "./Protocol/GameClientInterface/Handlers/SetMessageState";
+import { IConnectionManager } from "./Interfaces/IConnectionManager";
+import { IClient } from "./Interfaces/IClient";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -64,9 +65,7 @@ export enum MESSAGE_ID {
     LAST = INVALID
 };
 
-export class UserServerManager extends ServerBase implements IServer {
-
-    public handlerList : Array<IMessageHandler> = [];
+export class UserServerManager extends ServerBase implements IServer, IConnectionManager {
 
     constructor(readonly lobbyMgr : ILobbyManager) {
         super();
@@ -124,12 +123,16 @@ export class UserServerManager extends ServerBase implements IServer {
     }
 
     private onConnection( rawSocket : Socket) : void {
-        const client : UserClient = new UserClient(rawSocket, this);
+        const client : UserClient = new UserClient(rawSocket, this.handlerList, this);
         this.socketMap.set(client.uid, client);
 
         let message : AuthenticationChallenge = new AuthenticationChallenge(MESSAGE_ID.Challenge);
         message.salt = "ABCD";
         client.write(message.serialize());
+    }
+
+    public handleDisconnect(client : IClient) : void {
+        this.removeClient(client as IUserClient);
     }
 
     public removeClient(client : IUserClient) : void {

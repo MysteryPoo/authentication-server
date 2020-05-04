@@ -41,7 +41,7 @@ export class SetDiceHandler extends MessageHandlerBase {
 
                         myClient.write(responseBuffer);
 
-                        let myServer : UserServerManager = this.serverRef as UserServerManager;
+                        let myServer : UserServerManager = myClient.connectionManager as UserServerManager;
                         // Notify Friends
                         for (let friend of user.friendList) {
                             let client : IClient | undefined = myServer.getClientById(friend.toHexString());

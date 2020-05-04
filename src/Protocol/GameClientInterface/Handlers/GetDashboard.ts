@@ -21,7 +21,7 @@ export class GetDashboardHandler extends MessageHandlerBase {
     }
 
     respond(myClient : IClient, user : IUser) {
-        let myServer : UserServerManager = this.serverRef as UserServerManager;
+        let myServer : UserServerManager = myClient.connectionManager as UserServerManager;
         let response : GetDashboard = new GetDashboard(this.messageId);
         response.onlinePlayers = myServer.getAuthenticatedUsersCount();
         response.lookingPlayers = myServer.lobbyMgr.lobbyQueue.length; // This is wrong ... This is just number of lobbies in queue

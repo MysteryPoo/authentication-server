@@ -46,7 +46,7 @@ export class PurchaseAvatarByIdHandler extends MessageHandlerBase {
 
                     myClient.write(response.serialize());
 
-                    let getDashboard : GetDashboardHandler = new GetDashboardHandler(this.serverRef, MESSAGE_ID.GetDashboard);
+                    let getDashboard : GetDashboardHandler = new GetDashboardHandler(MESSAGE_ID.GetDashboard);
                     getDashboard.respond(myClient, user);
                 });
             });

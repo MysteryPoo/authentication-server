@@ -1,39 +1,69 @@
 
-import { Socket } from "net";
-import { IServer } from "../Interfaces/IServer";
+import { Socket, SocketConnectOpts } from "net";
 import { v4 as uuid } from "uuid";
 import { IClient } from "../Interfaces/IClient";
+import { IMessageHandler } from "../Interfaces/IMessageHandler";
+import { IConnectionManager } from "../Interfaces/IConnectionManager";
+
+class Header {
+    constructor(public messageId : number, public messageSize : number) {}
+}
+
+class Packet {
+    constructor(public header : Header, public data : Buffer) {}
+
+    get isValid() : boolean {
+        return this.header.messageSize - 5 === this.data.length;
+    }
+}
 
 export abstract class ClientBase implements IClient {
 
     public uid : string = uuid();
     public authenticated : boolean = false;
+    public isConnected : boolean = false;
+    public lastConnectionError : Error = new Error();
 
-    constructor(private socket : Socket, protected serverRef : IServer) {
+    constructor(
+        private socket : Socket,
+        protected handlerList : IMessageHandler[],
+        readonly connectionManager : IConnectionManager,
+        connectionOptions? : SocketConnectOpts,
+        onConnectCallback? : () => void
+        ) {
+
+        if (connectionOptions) {
+            socket.connect(connectionOptions, onConnectCallback);
+        }
 
         this.socket.on('data', (data : Buffer) => {
             let tell : number = 0;
             while(tell < data.byteLength) {
-                // This is header stuff, get off my back, Jesse
-                let rawIdentifier : number = data.readUInt8(tell);
-                let messageSize : number = data.readUInt32LE(tell + 1);
-                let messageData : Buffer = data.slice(tell + 5, tell + messageSize);
+                //let rawIdentifier : number = data.readUInt8(tell);
+                //let messageSize : number = data.readUInt32LE(tell + 1);
+                //let messageData : Buffer = data.slice(tell + 5, tell + messageSize);
 
-                if (this.ValidateMessageId(rawIdentifier)) {
-                    if (this.serverRef.handlerList[rawIdentifier]) {
-                        this.serverRef.handlerList[rawIdentifier].handle(messageData, this);
+                let packet : Packet = this.parseMessage(data, tell);
+
+                if (this.ValidateMessageId(packet.header.messageId)) {
+                    if (packet.isValid) {
+                        if (this.handlerList[packet.header.messageId]) {
+                            this.handlerList[packet.header.messageId].handle(packet.data, this);
+                        } else {
+                            console.error(`No handler registered for this messageType: ${this.GetMessageTypeString(packet.header.messageId)}(${packet.header.messageId})`);
+                        }
                     } else {
-                        console.error(`No handler registered for this messageType: ${this.GetMessageTypeString(rawIdentifier)}(${rawIdentifier})`);
+                        console.error(`Packet invalid: type [${this.GetMessageTypeString(packet.header.messageId)}]; data [${packet.data}]`);
                     }
                 } else {
-                    console.error(`Unknown messageType: ${rawIdentifier}`);
+                    console.error(`Unknown messageType: ${packet.header.messageId}`);
                 }
-                tell += messageSize;
+                tell += packet.header.messageSize;
             }
-            //console.log(data);
         })
         .on('error', (err : Error) => {
             console.error(err);
+            this.lastConnectionError = err;
         })
         .on('close', (had_error) => {
             if (had_error) {
@@ -41,9 +71,8 @@ export abstract class ClientBase implements IClient {
             } else {
                 console.debug(`Console: Socket has closed.`);
             }
-
-            // Delete
-            this.serverRef.removeClient(this);
+            this.isConnected = false;
+            this.connectionManager.handleDisconnect(this);
         });
     }
 
@@ -52,12 +81,27 @@ export abstract class ClientBase implements IClient {
     abstract GetMessageTypeString(identifier : number) : string;
 
     public write(buffer : Buffer) : boolean {
-        return this.socket.write(buffer);
+        this.isConnected = this.socket.write(buffer);
+        return this.isConnected;
     }
 
     public destroy() : void {
         this.socket.destroy();
         this.socket.unref();
+    }
+
+    private parseMessage(buffer : Buffer, tell : number) : Packet {
+        let header : Header = this.extractHeader(buffer, tell);
+        let messageData : Buffer = buffer.slice(tell + 5, tell + header.messageSize);
+
+        return new Packet(header, messageData);
+    }
+
+    private extractHeader(buffer : Buffer, tell : number) : Header {
+        let rawIdentifier : number = buffer.readUInt8(tell);
+        let messageSize : number = buffer.readUInt32LE(tell + 1);
+
+        return new Header(rawIdentifier, messageSize);
     }
 
 }

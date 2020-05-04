@@ -14,7 +14,7 @@ export class GetFriendListHandler extends MessageHandlerBase {
                 UserModel.find({ _id: {$in: user.friendList}}).exec( (err, friends : Array<IUser>) => {
                     if (err) console.error(err);
 
-                    let myServer: UserServerManager = this.serverRef as UserServerManager;
+                    let myServer: UserServerManager = myClient.connectionManager as UserServerManager;
                     for (let friend of friends) {
                         let online : boolean = myServer.getClientById(friend.id) ? true : false;
 

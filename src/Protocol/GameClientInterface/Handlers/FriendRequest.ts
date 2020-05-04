@@ -28,7 +28,7 @@ export class FriendRequestHandler extends MessageHandlerBase {
                             friend.friendList.push(user._id);
                             friend.save();
 
-                            let myServer : UserServerManager = this.serverRef as UserServerManager;
+                            let myServer : UserServerManager = myClient.connectionManager as UserServerManager;
                             let friendClient : IClient | undefined = myServer.getClientById(friend.id);
                             let friendInfo : GetFriendList = new GetFriendList(MESSAGE_ID.GetFriends);
                             friendInfo.id = friend.id;
@@ -71,7 +71,7 @@ export class FriendRequestHandler extends MessageHandlerBase {
                         user.save();
                         friend.save();
 
-                        let myServer : UserServerManager = this.serverRef as UserServerManager;
+                        let myServer : UserServerManager = myClient.connectionManager as UserServerManager;
                         let friendClient : IClient | undefined = myServer.getClientById(friend.id);
                         let friendInfo : GetFriendList = new GetFriendList(MESSAGE_ID.GetFriends);
                         friendInfo.id = friend.id;

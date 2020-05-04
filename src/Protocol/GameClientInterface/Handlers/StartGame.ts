@@ -10,7 +10,7 @@ export class StartGameHandler extends MessageHandlerBase {
 
     handle(buffer: Buffer, myClient: IUserClient): boolean {
         if (myClient.authenticated) {
-            let userServer : UserServerManager = this.serverRef as UserServerManager;
+            let userServer : UserServerManager = myClient.connectionManager as UserServerManager;
             let lobby : ILobby | undefined = userServer.lobbyMgr.getLobbyOfClient(myClient);
 
             if (lobby) {

@@ -11,7 +11,7 @@ export class LobbyPlayerHandler extends MessageHandlerBase {
         let message : LobbyPlayer = new LobbyPlayer(this.messageId, buffer);
 
         if (message.valid && myClient.authenticated) {
-            let myServer : UserServerManager = this.serverRef as UserServerManager;
+            let myServer : UserServerManager = myClient.connectionManager as UserServerManager;
             let lobby : ILobby | undefined = myServer.lobbyMgr.getLobbyOfClient(myClient);
 
             if (lobby) {

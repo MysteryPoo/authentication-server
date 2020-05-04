@@ -1,6 +1,7 @@
 
 import { expect } from "chai";
-import { PingHandler, Ping } from "../src/Protocol/Common/Ping";
+import { Ping } from "../src/Protocol/Common/Ping";
+import { PingHandler } from "../src/Protocol/Common/PingHandler";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { SocketMock } from "./Mocks/SocketMock";
@@ -24,8 +25,8 @@ function setupIncommingPing(good : boolean) : Buffer {
 describe("Ping Handler", () => {
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : PingHandler = new PingHandler(server, 1);
+        let myClient : ClientMock = new ClientMock(new SocketMock(), [], server);
+        let handler : PingHandler = new PingHandler(1);
 
         expect(handler.handle(setupIncommingPing(true), myClient)).to.be.true;
 
@@ -34,8 +35,8 @@ describe("Ping Handler", () => {
 
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : PingHandler = new PingHandler(server, 1);
+        let myClient : ClientMock = new ClientMock(new SocketMock(), [], server);
+        let handler : PingHandler = new PingHandler(1);
 
         expect(handler.handle(setupIncommingPing(false), myClient)).to.be.false;
 

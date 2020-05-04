@@ -1,7 +1,9 @@
 
 import { IUserClient } from "../../src/Interfaces/IUserClient";
-import { IServer } from "../../src/Interfaces/IServer";
 import { SocketMock } from "./SocketMock";
+import { IConnectionManager } from "../../src/Interfaces/IConnectionManager";
+import { IMessageHandler } from "../../src/Interfaces/IMessageHandler";
+import { SocketConnectOpts } from "net";
 
 export class ClientMock implements IUserClient {
 
@@ -10,9 +12,14 @@ export class ClientMock implements IUserClient {
     public isReady: boolean = false;
     public gameVersion: number = 0;
 
-    constructor(private socket : SocketMock, private serverRef : IServer) {
-
-    }
+    constructor(
+        private socket : SocketMock,
+        protected handlerList : IMessageHandler[],
+        readonly connectionManager : IConnectionManager,
+        connectionOptions? : SocketConnectOpts,
+        onConnectCallback? : () => void
+        )
+        {}
 
     write(buffer: Buffer): boolean {
         throw new Error("Method not implemented.");

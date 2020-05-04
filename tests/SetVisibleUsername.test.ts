@@ -63,8 +63,8 @@ describe("SetVisibleUsername Message", () => {
 describe("SetVisibleUsername Handler", () => {
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : SetVisibleUsernameHandler = new SetVisibleUsernameHandler(server, 1);
+        let myClient : ClientMock = new ClientMock(new SocketMock(), [], server);
+        let handler : SetVisibleUsernameHandler = new SetVisibleUsernameHandler(1);
 
         expect(handler.handle(setupIncomingMessage(true), myClient)).to.be.true;
 
@@ -73,8 +73,8 @@ describe("SetVisibleUsername Handler", () => {
 
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : SetVisibleUsernameHandler = new SetVisibleUsernameHandler(server, 1);
+        let myClient : ClientMock = new ClientMock(new SocketMock(), [], server);
+        let handler : SetVisibleUsernameHandler = new SetVisibleUsernameHandler(1);
 
         expect(handler.handle(setupIncomingMessage(false), myClient)).to.be.false;
 

@@ -1,59 +1,35 @@
 
-import { IMessageBase } from "../../Interfaces/IMessageBase";
-import { IMessageHandler } from "../../Interfaces/IMessageHandler";
-import { IServer } from "../../Interfaces/IServer";
-import { IClient } from "../../Interfaces/IClient";
+import { MessageBase } from "../../Abstracts/MessageBase";
+import { BufferHelper } from "../../BufferHelper";
 
-const size : number = 13;
+export class Ping extends MessageBase {
 
-export class Ping implements IMessageBase {
+    public time! : bigint;
 
-    valid : boolean = false;
+    serialize(): Buffer {
+        let bufferSize : number = 13;
+        let helper : BufferHelper = new BufferHelper(Buffer.allocUnsafe(bufferSize));
+        
+        helper.writeUInt8(this.messageId);
+        helper.writeUInt32LE(bufferSize);
+        helper.writeBigUInt64LE(this.time);
 
-    public time: bigint = BigInt(0);
-
-    constructor(protected messageId : number, buffer?: Buffer) {
-        if (buffer) {
-            this.deserialize(buffer);
-        }
+        return helper.buffer;
     }
 
-    public serialize() : Buffer {
-        let buffer = Buffer.allocUnsafe(size);
-        buffer.writeUInt8(this.messageId, 0);
-        buffer.writeUInt32LE(size, 1);
-        buffer.writeBigUInt64LE(this.time, 5);
-        return buffer;
-    }
-
-    public deserialize(buffer: Buffer) : void {
+    deserialize(buffer: Buffer): void {
         try {
-            const bufferSize = 8;
-            if(buffer.length != bufferSize) {
-                throw `Incorrect buffer size. Expected ${bufferSize}, but got ${buffer.length}`;
-            }
-            this.time = buffer.readBigUInt64LE(0);
+            this.validate(buffer, 8);
+
+            let helper : BufferHelper = new BufferHelper(buffer);
+
+            this.time = helper.readBigUInt64LE();
+
             this.valid = true;
         } catch (e) {
             console.error(e);
             this.valid = false;
         }
     }
-}
 
-export class PingHandler implements IMessageHandler {
-
-    constructor(readonly serverRef : IServer, readonly messageId : number) {
-
-    }
-
-    public handle(buffer : Buffer, myClient: IClient) : boolean {
-        let message : Ping = new Ping(this.messageId, buffer);
-
-        if (message.valid) {
-            return myClient.write(message.serialize());
-        } else {
-            return false;
-        }
-    }
 }

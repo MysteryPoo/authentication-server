@@ -13,8 +13,8 @@ export abstract class ServerBase extends netServer implements IServer {
 
     abstract removeClient(client: IClient): void;
 
-    protected registerHandler<T extends IMessageHandler>(messageId : number, handler : {new(serverRef : IServer, messageId : number) : T; }) {
-        this.handlerList[messageId] = new handler(this, messageId);
+    protected registerHandler<T extends IMessageHandler>(messageId : number, handler : {new(messageId : number) : T; }) {
+        this.handlerList[messageId] = new handler(messageId);
     }
 
 }

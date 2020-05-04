@@ -45,7 +45,7 @@ export class HandshakeHandler extends MessageHandlerBase {
                         user.save();
                     });
 
-                    let server : UserServerManager = this.serverRef as UserServerManager;
+                    let server : UserServerManager = myClient.connectionManager as UserServerManager;
                     server.authenticateClient(user.id, myClient);
                     myClient.uid = user.id;
 
@@ -80,7 +80,7 @@ export class HandshakeHandler extends MessageHandlerBase {
                             user.last_login = new Date();
                             user.save();
 
-                            let server : UserServerManager = this.serverRef as UserServerManager;
+                            let server : UserServerManager = myClient.connectionManager as UserServerManager;
                             server.authenticateClient(user.id, myClient);
                             myClient.uid = user.id;
                         } else {
@@ -106,7 +106,7 @@ export class HandshakeHandler extends MessageHandlerBase {
         }
 
         if (disconnect) {
-            this.serverRef.removeClient(myClient);
+            myClient.connectionManager.handleDisconnect(myClient);
             return false;
         }
 

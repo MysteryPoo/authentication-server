@@ -13,7 +13,7 @@ export class HandshakeHandler extends MessageHandlerBase {
         let disconnect : boolean = false;
 
         if (message.valid) {
-            let gameServerServer : GameServerServer = this.serverRef as GameServerServer;
+            let gameServerServer : GameServerServer = myClient.connectionManager as GameServerServer;
             myClient.state = gsState.Ready;
             myClient.authenticated = true;
             

@@ -10,7 +10,7 @@ export class UpdateLobbyDataHandler extends MessageHandlerBase {
         let message : UpdateLobbyData = new UpdateLobbyData(this.messageId, buffer);
 
         if (message.valid && myClient.authenticated) {
-            let serv : UserServerManager = this.serverRef as UserServerManager;
+            let serv : UserServerManager = myClient.connectionManager as UserServerManager;
             let lobby : ILobby | undefined = serv.lobbyMgr.getLobbyOfClient(myClient);
 
             if (lobby) {

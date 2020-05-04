@@ -28,7 +28,7 @@ export class MessageInfoHandler extends MessageHandlerBase {
                             recipient.messageList.push(newMessage.id);
                             recipient.save();
 
-                            let recipientClient : IClient | undefined = (this.serverRef as UserServerManager).getClientById(message.recipient);
+                            let recipientClient : IClient | undefined = (myClient.connectionManager as UserServerManager).getClientById(message.recipient);
                             if (recipientClient) {
                                 let notification : MessageInfo = new MessageInfo(this.messageId);
                                 notification.id = newMessage.id;

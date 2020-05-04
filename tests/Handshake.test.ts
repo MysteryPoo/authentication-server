@@ -46,8 +46,8 @@ describe("Handshake Handler", () => {
 
     it("should respond with a valid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : HandshakeHandler = new HandshakeHandler(server, 1);
+        let myClient : ClientMock = new ClientMock(new SocketMock(), [], server);
+        let handler : HandshakeHandler = new HandshakeHandler(1);
 
         expect(handler.handle(setupIncomingMessage(true), myClient)).to.be.true;
 
@@ -56,8 +56,8 @@ describe("Handshake Handler", () => {
 
     it("should create a new user", (done) => {
         let server : ServerMock = new ServerMock();
-        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : HandshakeHandler = new HandshakeHandler(server, 1);
+        let myClient : ClientMock = new ClientMock(new SocketMock(), [], server);
+        let handler : HandshakeHandler = new HandshakeHandler(1);
 
         let idLength : number = 1, passLength : number = 1, uuidLength : number = 1;
 
@@ -78,8 +78,8 @@ describe("Handshake Handler", () => {
 
     it("should survive with an invalid request", (done) => {
         let server : ServerMock = new ServerMock();
-        let myClient : ClientMock = new ClientMock(new SocketMock(), server);
-        let handler : HandshakeHandler = new HandshakeHandler(server, 1);
+        let myClient : ClientMock = new ClientMock(new SocketMock(), [], server);
+        let handler : HandshakeHandler = new HandshakeHandler(1);
 
         expect(handler.handle(setupIncomingMessage(false), myClient)).to.be.false;
 
