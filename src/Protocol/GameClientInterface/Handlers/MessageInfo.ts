@@ -4,7 +4,7 @@ import { IClient } from "../../../Interfaces/IClient";
 import { MessageInfo } from "../Messages/MessageInfo";
 import MessageModel, { IMessage } from "../../../Models/Message.model";
 import UserModel, { IUser } from "../../../Models/User.model";
-import { UserServer } from "../../../UserServer";
+import { UserServerManager } from "../../../UserServerManager";
 
 export class MessageInfoHandler extends MessageHandlerBase {
 
@@ -28,7 +28,7 @@ export class MessageInfoHandler extends MessageHandlerBase {
                             recipient.messageList.push(newMessage.id);
                             recipient.save();
 
-                            let recipientClient : IClient | undefined = (this.serverRef as UserServer).getClientById(message.recipient);
+                            let recipientClient : IClient | undefined = (this.serverRef as UserServerManager).getClientById(message.recipient);
                             if (recipientClient) {
                                 let notification : MessageInfo = new MessageInfo(this.messageId);
                                 notification.id = newMessage.id;

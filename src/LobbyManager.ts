@@ -4,11 +4,16 @@ import { ILobby } from "./Interfaces/ILobby";
 import { Lobby } from "./Lobby";
 import { IUserClient } from "./Interfaces/IUserClient";
 import { STATE } from "./Interfaces/IGameServer";
+import { ContainerManager } from "./ContainerManager";
 
 export class LobbyManager implements ILobbyManager {
 
     lobbyList: ILobby[] = [];
     lobbyQueue: ILobby[] = [];
+
+    constructor(public containerManager : ContainerManager) {
+        
+    }
 
     createLobby(host: IUserClient, isPublic: boolean, maxPlayers: number): ILobby {
         
@@ -62,13 +67,24 @@ export class LobbyManager implements ILobbyManager {
         }
 
         const maxLaunchAttempts : number = 10;
+        if (lobby.numberOfLaunchAttempts >= maxLaunchAttempts) {
+            let clientList : Array<IUserClient> = lobby.clientList;
+            let isPublic : boolean = lobby.isPublic;
+            let maxPlayers : number = lobby.maxPlayers;
+            this.removeLobby(lobby);
+            let newLobby = this.createLobby(clientList[0], isPublic, maxPlayers);
+            for(let p = 1; p < clientList.length; ++p) {
+                newLobby.addPlayer(clientList[p]);
+            }
+            return QUEUE_ERROR.NO_SERVER_AVAILABLE;
+        }
 
         // Ready to get a game server assigned
         if (!lobby.isPublic || 
-            lobby.getAvailableSlots() === 0 ||
-            lobby.numberOfLaunchAttempts >= maxLaunchAttempts) {
+            lobby.getAvailableSlots() === 0) {
                 // Ready to start
-
+                lobby.numberOfLaunchAttempts += 1;
+                console.debug(`Number of launch attempts: ${lobby.numberOfLaunchAttempts}`);
                 return QUEUE_ERROR.OK;
         }
 

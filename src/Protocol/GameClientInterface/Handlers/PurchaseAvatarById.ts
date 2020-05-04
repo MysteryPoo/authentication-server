@@ -4,7 +4,7 @@ import { IClient } from "../../../Interfaces/IClient";
 import { PurchaseAvatarById } from "../Messages/PurchaseAvatarById";
 import AvatarModel, { IAvatar } from "../../../Models/Avatar.model";
 import UserModel, { IUser } from "../../../Models/User.model";
-import { MESSAGE_ID } from "../../../UserServer";
+import { MESSAGE_ID } from "../../../UserServerManager";
 import { GetDashboardHandler } from "./GetDashboard";
 
 export class PurchaseAvatarByIdHandler extends MessageHandlerBase {

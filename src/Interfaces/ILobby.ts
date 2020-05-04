@@ -19,13 +19,14 @@ export interface ILobby {
     gameServerPort : number;
     gameServerPassword : string;
     gameVersion : number;
+    requestedGameServer : boolean;
 
     addPlayer(client : IUserClient) : ERROR;
     containsPlayer(client : IUserClient) : boolean;
     containsPlayerId(clientId : string) : boolean;
     removePlayer(client: IUserClient) : boolean;
     isReadyToQueue() : boolean;
-    requestGameServer() : Promise<void>; // This will change
+    requestGameServer() : Promise<number>; // This will change
     getAvailableSlots() : number;
     setPublic(isPublic : boolean) : void;
     start() : void;

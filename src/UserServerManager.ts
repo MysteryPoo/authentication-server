@@ -64,7 +64,7 @@ export enum MESSAGE_ID {
     LAST = INVALID
 };
 
-export class UserServer extends ServerBase implements IServer {
+export class UserServerManager extends ServerBase implements IServer {
 
     public handlerList : Array<IMessageHandler> = [];
 

@@ -5,7 +5,7 @@ import { FriendRequest } from "../Messages/FriendRequest";
 import UserModel, { IUser } from "../../../Models/User.model";
 import { ObjectId } from "mongodb";
 import { GetFriendList } from "../Messages/GetFriendList";
-import { MESSAGE_ID, UserServer } from "../../../UserServer";
+import { MESSAGE_ID, UserServerManager } from "../../../UserServerManager";
 
 export class FriendRequestHandler extends MessageHandlerBase {
 
@@ -28,7 +28,7 @@ export class FriendRequestHandler extends MessageHandlerBase {
                             friend.friendList.push(user._id);
                             friend.save();
 
-                            let myServer : UserServer = this.serverRef as UserServer;
+                            let myServer : UserServerManager = this.serverRef as UserServerManager;
                             let friendClient : IClient | undefined = myServer.getClientById(friend.id);
                             let friendInfo : GetFriendList = new GetFriendList(MESSAGE_ID.GetFriends);
                             friendInfo.id = friend.id;
@@ -71,7 +71,7 @@ export class FriendRequestHandler extends MessageHandlerBase {
                         user.save();
                         friend.save();
 
-                        let myServer : UserServer = this.serverRef as UserServer;
+                        let myServer : UserServerManager = this.serverRef as UserServerManager;
                         let friendClient : IClient | undefined = myServer.getClientById(friend.id);
                         let friendInfo : GetFriendList = new GetFriendList(MESSAGE_ID.GetFriends);
                         friendInfo.id = friend.id;

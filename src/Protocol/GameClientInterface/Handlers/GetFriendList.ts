@@ -3,7 +3,7 @@ import { MessageHandlerBase } from "../../../Abstracts/MessageHandlerBase";
 import { IClient } from "../../../Interfaces/IClient";
 import { GetFriendList } from "../Messages/GetFriendList";
 import UserModel, { IUser } from "../../../Models/User.model";
-import { UserServer } from "../../../UserServer";
+import { UserServerManager } from "../../../UserServerManager";
 
 export class GetFriendListHandler extends MessageHandlerBase {
 
@@ -14,7 +14,7 @@ export class GetFriendListHandler extends MessageHandlerBase {
                 UserModel.find({ _id: {$in: user.friendList}}).exec( (err, friends : Array<IUser>) => {
                     if (err) console.error(err);
 
-                    let myServer: UserServer = this.serverRef as UserServer;
+                    let myServer: UserServerManager = this.serverRef as UserServerManager;
                     for (let friend of friends) {
                         let online : boolean = myServer.getClientById(friend.id) ? true : false;
 

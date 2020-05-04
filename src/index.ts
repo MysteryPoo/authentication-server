@@ -1,10 +1,11 @@
 
 import { config } from "dotenv";
-import { UserServer } from "./UserServer";
+import { UserServerManager } from "./UserServerManager";
 import { GameServerServer } from "./GameServerServer";
 import mongoose from "mongoose";
 import { LobbyManager } from "./LobbyManager";
 import { DatabaseUtility } from "./DatabaseUtility";
+import { ContainerManager } from "./ContainerManager";
 
 config();
 
@@ -19,9 +20,10 @@ db.once('open', function() {
     DatabaseUtility.fillAvatars();
 });
 
-const lobbyManager : LobbyManager = new LobbyManager();
+const containerManager : ContainerManager = ContainerManager.GetInstance<ContainerManager>();
+const lobbyManager : LobbyManager = new LobbyManager(containerManager);
 
-const server : UserServer = new UserServer(lobbyManager);
+const server : UserServerManager = new UserServerManager(lobbyManager);
 server.start(gameClientPort);
 
 const gameServerManager : GameServerServer = new GameServerServer(lobbyManager);

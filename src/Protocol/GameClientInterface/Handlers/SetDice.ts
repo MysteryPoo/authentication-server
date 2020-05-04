@@ -6,7 +6,7 @@ import UserModel, { IUser } from "../../../Models/User.model";
 import { ObjectId } from "mongodb";
 import DiceModel, { IDice } from "../../../Models/Dice.model";
 import { GetPublicPlayerInfo } from "../Messages/GetPublicPlayerInfo";
-import { MESSAGE_ID, UserServer } from "../../../UserServer";
+import { MESSAGE_ID, UserServerManager } from "../../../UserServerManager";
 import { ILobby } from "../../../Interfaces/ILobby";
 
 export class SetDiceHandler extends MessageHandlerBase {
@@ -41,7 +41,7 @@ export class SetDiceHandler extends MessageHandlerBase {
 
                         myClient.write(responseBuffer);
 
-                        let myServer : UserServer = this.serverRef as UserServer;
+                        let myServer : UserServerManager = this.serverRef as UserServerManager;
                         // Notify Friends
                         for (let friend of user.friendList) {
                             let client : IClient | undefined = myServer.getClientById(friend.toHexString());

@@ -1,7 +1,7 @@
 
 import { ClientBase } from "./Abstracts/ClientBase";
 import { IClient } from "./Interfaces/IClient";
-import { MESSAGE_ID } from "./UserServer";
+import { MESSAGE_ID } from "./UserServerManager";
 import { IUserClient } from "./Interfaces/IUserClient";
 
 export class UserClient extends ClientBase implements IClient, IUserClient {

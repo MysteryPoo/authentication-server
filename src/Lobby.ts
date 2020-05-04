@@ -4,9 +4,8 @@ import { ILobbyManager } from "./Interfaces/ILobbyManager";
 import { IGameServer } from "./Interfaces/IGameServer";
 import { IMessageBase } from "./Interfaces/IMessageBase";
 import { UpdateLobbyData } from "./Protocol/GameClientInterface/Messages/UpdateLobbyData";
-import { MESSAGE_ID } from "./UserServer";
+import { MESSAGE_ID } from "./UserServerManager";
 import { LobbyPlayer } from "./Protocol/GameClientInterface/Messages/LobbyPlayer";
-import http from "http";
 import { IUserClient } from "./Interfaces/IUserClient";
 import { StartGame } from "./Protocol/GameClientInterface/Messages/StartGame";
 
@@ -15,108 +14,15 @@ export class Lobby implements ILobby {
     clientList : IUserClient[] = [];
     numberOfLaunchAttempts : number = 0;
     gameServer : IGameServer | null = null;
-    private gameServerId : string = "";
     gameServerPort : number = 0;
     gameServerPassword : string = "TEST";
     gameVersion : number = 0;
-    private requestedGameServer = false;
+    requestedGameServer = false;
 
     constructor(private lobbyMgrRef : ILobbyManager, host : IUserClient, public isPublic : boolean, public maxPlayers : number) {
         this.clientList.push(host);
         this.gameVersion = host.gameVersion;
         this.update();
-    }
-
-    private createContainer() : void {
-        let data = JSON.stringify({
-            "Image": "farkleinspacegameserver:latest",
-            "Env" : [
-                `AUTHIP=host.docker.internal`,
-                `HOST=${this.clientList[0].uid}`,
-                `PASSWORD=${this.gameServerPassword}`,
-                `TOKEN=1234`
-            ],
-            "HostConfig" : {
-                "AutoRemove" : false,
-                "PortBindings" : {
-                    "9000/tcp" : [
-                        {
-                            "HostPort" : ""
-                        }
-                    ]
-                }
-            }
-        });
-
-        let options = {
-            socketPath: '/var/run/docker.sock',
-            path: '/containers/create',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            }
-        }
-
-        const request = http.request(options, (response) => {
-            response.setEncoding('utf8');
-            response.on('data', data => {
-                console.debug(data);
-                this.gameServerId = JSON.parse(data).Id;
-                this.startContainer();
-            });
-            response.on('error', err => {
-                console.error(err);
-            });
-        });
-
-        request.write(data);
-        request.end();
-    }
-
-    private async startContainer() : Promise<void> {
-        let options = {
-            socketPath: '/var/run/docker.sock',
-            path: `/containers/${this.gameServerId}/start`,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': 0
-            }
-        }
-
-        const request = http.request(options, (response) => {
-            response.setEncoding('utf8');
-            response.on('data', data => {
-                return this.getContainerPort();
-            });
-            response.on('error', err => {
-                console.error(err);
-            });
-        });
-
-        request.end();
-    }
-
-    private async getContainerPort() : Promise<void> {
-        let options = {
-            socketPath: '/var/run/docker.sock',
-            path: `/containers/${this.gameServerId}/json`,
-            method: 'GET'
-        }
-
-        const request = http.request(options, (response) => {
-            response.setEncoding('utf8');
-            response.on('data', data => {
-                this.gameServerPort = JSON.parse(data).NetworkSettings.Ports["9000/tcp"].HostPort;
-                return;
-            });
-            response.on('error', err => {
-                console.error(err);
-            });
-        });
-
-        request.end();
     }
 
     addPlayer(client: IUserClient): ERROR {
@@ -173,13 +79,15 @@ export class Lobby implements ILobby {
 		return isReady;
     }
 
-    async requestGameServer() : Promise<void> {
-        if (this.requestedGameServer) {
-            return;
-        } else {
-            this.requestedGameServer = true;
-            return this.createContainer();
-        }
+    async requestGameServer() : Promise<number> {
+        return new Promise<number>( (resolve, reject) => {
+            if (this.requestedGameServer) {
+                reject("Already requested.");
+            } else {
+                this.requestedGameServer = true;
+                resolve(this.lobbyMgrRef.containerManager.createGameServerContainer(this.clientList[0].uid, this.gameServerPassword));
+            }
+        });
     }
 
     getAvailableSlots() : number {

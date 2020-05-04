@@ -1,6 +1,7 @@
 
 import { ILobby } from "./ILobby";
 import { IClient } from "./IClient";
+import { ContainerManager } from "../ContainerManager";
 
 export enum QUEUE_ERROR {
     OK,
@@ -14,6 +15,7 @@ export interface ILobbyManager {
 
     lobbyList : Array<ILobby>;
     lobbyQueue : Array<ILobby>;
+    containerManager : ContainerManager;
 
     createLobby(host : IClient, isPublic : boolean, maxPlayers : number) : ILobby;
     getLobbyOfClient(client : IClient) : ILobby | undefined;

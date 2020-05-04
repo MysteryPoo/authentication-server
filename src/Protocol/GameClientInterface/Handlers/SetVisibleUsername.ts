@@ -4,7 +4,7 @@ import { IClient } from "../../../Interfaces/IClient";
 import { SetVisibleUsername } from "../Messages/SetVisibleUsername";
 import UserModel, { IUser } from "../../../Models/User.model";
 import { Handshake } from "../Messages/Handshake";
-import { MESSAGE_ID } from "../../../UserServer";
+import { MESSAGE_ID } from "../../../UserServerManager";
 
 export class SetVisibleUsernameHandler extends MessageHandlerBase {
 
@@ -15,7 +15,7 @@ export class SetVisibleUsernameHandler extends MessageHandlerBase {
             if (myClient.authenticated) {
                 UserModel.findById(myClient.uid).exec( (err, user : IUser) => {
                     if (err) console.error(err);
-
+                    // TODO Need some error handling done. Especially for duplicate names
                     user.username = message.username;
 
                     let response : Handshake = new Handshake(MESSAGE_ID.Handshake);

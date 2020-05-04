@@ -4,7 +4,7 @@ import { IClient } from "../../../Interfaces/IClient";
 import UserModel, { IUser } from "../../../Models/User.model";
 import MessageModel, { IMessage } from "../../../Models/Message.model";
 import { MessageInfo } from "../Messages/MessageInfo";
-import { MESSAGE_ID } from "../../../UserServer";
+import { MESSAGE_ID } from "../../../UserServerManager";
 
 export class GetMessagesHandler extends MessageHandlerBase {
 

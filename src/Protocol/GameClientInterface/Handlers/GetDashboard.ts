@@ -3,7 +3,7 @@ import { MessageHandlerBase } from "../../../Abstracts/MessageHandlerBase";
 import { IClient } from "../../../Interfaces/IClient";
 import UserModel, { IUser } from "../../../Models/User.model";
 import { GetDashboard } from "../Messages/GetDashboard";
-import { UserServer } from "../../../UserServer";
+import { UserServerManager } from "../../../UserServerManager";
 
 export class GetDashboardHandler extends MessageHandlerBase {
 
@@ -21,7 +21,7 @@ export class GetDashboardHandler extends MessageHandlerBase {
     }
 
     respond(myClient : IClient, user : IUser) {
-        let myServer : UserServer = this.serverRef as UserServer;
+        let myServer : UserServerManager = this.serverRef as UserServerManager;
         let response : GetDashboard = new GetDashboard(this.messageId);
         response.onlinePlayers = myServer.getAuthenticatedUsersCount();
         response.lookingPlayers = myServer.lobbyMgr.lobbyQueue.length; // This is wrong ... This is just number of lobbies in queue

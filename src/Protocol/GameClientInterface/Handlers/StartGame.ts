@@ -2,7 +2,7 @@
 import { MessageHandlerBase } from "../../../Abstracts/MessageHandlerBase";
 import { IUserClient } from "../../../Interfaces/IUserClient";
 import { ILobby } from "../../../Interfaces/ILobby";
-import { UserServer } from "../../../UserServer";
+import { UserServerManager } from "../../../UserServerManager";
 import { QUEUE_ERROR } from "../../../Interfaces/ILobbyManager";
 import { StartGame } from "../Messages/StartGame";
 
@@ -10,7 +10,7 @@ export class StartGameHandler extends MessageHandlerBase {
 
     handle(buffer: Buffer, myClient: IUserClient): boolean {
         if (myClient.authenticated) {
-            let userServer : UserServer = this.serverRef as UserServer;
+            let userServer : UserServerManager = this.serverRef as UserServerManager;
             let lobby : ILobby | undefined = userServer.lobbyMgr.getLobbyOfClient(myClient);
 
             if (lobby) {
@@ -23,8 +23,10 @@ export class StartGameHandler extends MessageHandlerBase {
                         response.ip = "Requesting server...";
                         response.port = 0;
                         response.token = 0;
-                        lobby.requestGameServer().then( () => {
-                            
+                        lobby.requestGameServer().then( (port : number) => {
+                            lobby!.gameServerPort = port;
+                        }).catch( (reason) => {
+                            console.error(reason);
                         });
                         break;
                     case QUEUE_ERROR.ALREADY_STARTED:

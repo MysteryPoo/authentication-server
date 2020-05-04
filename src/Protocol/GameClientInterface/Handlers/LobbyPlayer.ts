@@ -2,7 +2,7 @@
 import { MessageHandlerBase } from "../../../Abstracts/MessageHandlerBase";
 import { LobbyPlayer } from "../Messages/LobbyPlayer";
 import { ILobby } from "../../../Interfaces/ILobby";
-import { UserServer } from "../../../UserServer";
+import { UserServerManager } from "../../../UserServerManager";
 import { IUserClient } from "../../../Interfaces/IUserClient";
 
 export class LobbyPlayerHandler extends MessageHandlerBase {
@@ -11,7 +11,7 @@ export class LobbyPlayerHandler extends MessageHandlerBase {
         let message : LobbyPlayer = new LobbyPlayer(this.messageId, buffer);
 
         if (message.valid && myClient.authenticated) {
-            let myServer : UserServer = this.serverRef as UserServer;
+            let myServer : UserServerManager = this.serverRef as UserServerManager;
             let lobby : ILobby | undefined = myServer.lobbyMgr.getLobbyOfClient(myClient);
 
             if (lobby) {

@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 import UserModel, { IUser } from "../../../Models/User.model";
 import crypto from "crypto";
 import { v4 as uuid } from "uuid";
-import { UserServer } from "../../../UserServer";
+import { UserServerManager } from "../../../UserServerManager";
 import { IUserClient } from "../../../Interfaces/IUserClient";
 import MessageModel, { IMessage } from "../../../Models/Message.model";
 
@@ -45,7 +45,7 @@ export class HandshakeHandler extends MessageHandlerBase {
                         user.save();
                     });
 
-                    let server : UserServer = this.serverRef as UserServer;
+                    let server : UserServerManager = this.serverRef as UserServerManager;
                     server.authenticateClient(user.id, myClient);
                     myClient.uid = user.id;
 
@@ -80,7 +80,7 @@ export class HandshakeHandler extends MessageHandlerBase {
                             user.last_login = new Date();
                             user.save();
 
-                            let server : UserServer = this.serverRef as UserServer;
+                            let server : UserServerManager = this.serverRef as UserServerManager;
                             server.authenticateClient(user.id, myClient);
                             myClient.uid = user.id;
                         } else {

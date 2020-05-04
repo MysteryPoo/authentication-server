@@ -4,7 +4,7 @@ import { IClient } from "../../../Interfaces/IClient";
 import { PurchaseDiceById } from "../Messages/PurchaseDiceById";
 import DiceModel, { IDice } from "../../../Models/Dice.model";
 import UserModel, { IUser } from "../../../Models/User.model";
-import { MESSAGE_ID } from "../../../UserServer";
+import { MESSAGE_ID } from "../../../UserServerManager";
 import { GetDashboardHandler } from "./GetDashboard";
 
 export class PurchaseDiceByIdHandler extends MessageHandlerBase {
