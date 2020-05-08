@@ -20,17 +20,14 @@ const UserSchema : Schema = new Schema({
     },
     avatarUri: {
         type: String,
-        required: false,
         default: ""
     },
     diceUri: {
         type: String,
-        required: false,
         default: ""
     },
     email: {
         type: String,
-        required: false,
         default: ""
     },
     created: {
@@ -41,23 +38,19 @@ const UserSchema : Schema = new Schema({
         type: Date,
         default: Date.now
     },
-    active: Boolean,
-    isAdmin: Boolean,
+    isAdmin: {type: Boolean, default: false},
     device_uuid: {
         type: String,
         required: false,
         default: uuid()
     },
-    experience: Number,
-    level: {
-        type: Number,
-        default: 1
-    },
-    credits: Number,
-    premium: Number,
-    conquest: Number,
-    rating: Number,
-    rank: Number,
+    experience: {type: Number, default: 0},
+    level: {type: Number, default: 1},
+    credits: {type: Number, default: 0},
+    premium: {type: Number, default: 0},
+    conquest: {type: Number, default: 0},
+    rating: {type: Number, default: 1400},
+    rank: {type: Number, default: 1},
     avatarList: [{type: Schema.Types.ObjectId}],
     diceList: [{type: Schema.Types.ObjectId}],
     shipSkinList: [{type: Schema.Types.ObjectId}],
@@ -77,7 +70,6 @@ interface IUserSchema extends Document {
     email : string,
     created : Date,
     last_login : Date,
-    active : boolean,
     isAdmin : boolean,
     device_uuid : string,
     experience : number,

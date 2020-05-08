@@ -1,8 +1,7 @@
 
-import { Singleton } from "./Singleton";
 import http from "http";
 
-export class ContainerManager extends Singleton {
+export class ContainerManager {
 
     public createGameServerContainer(host : string, password : string) : Promise<number> {
         return new Promise<number>( (resolve, reject) => {

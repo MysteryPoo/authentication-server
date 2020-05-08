@@ -3,7 +3,7 @@ import { MessageBase } from "../../../Abstracts/MessageBase";
 import { BufferHelper } from "../../../BufferHelper";
 
 class PlayerData {
-    constructor(public id : string, public score : number, public trophyList : Array<number>) {
+    constructor(public playerId : string, public score : number, public trophyList : Array<number>) {
 
     }
 }
@@ -24,6 +24,7 @@ export class BattleReport extends MessageBase {
             let winnerIdLength : number = helper.readUInt8();
             this.winnerId = helper.readString(winnerIdLength);
 
+            this.playerList = [];
             let numPlayers : number = helper.readUInt8();
             for (let p = 0; p < numPlayers; ++p) {
                 let idLength : number = helper.readUInt8();

@@ -30,6 +30,8 @@ import { MessageInfoHandler } from "./Protocol/GameClientInterface/Handlers/Mess
 import { SetMessageStateHandler } from "./Protocol/GameClientInterface/Handlers/SetMessageState";
 import { IConnectionManager } from "./Interfaces/IConnectionManager";
 import { IClient } from "./Interfaces/IClient";
+import { GetNextAwardHandler } from "./Protocol/GameClientInterface/Handlers/GetNextAward";
+import { GetNextBattleReportHandler } from "./Protocol/GameClientInterface/Handlers/GetNextBattleReport";
 
 export enum MESSAGE_ID {
     FIRST,
@@ -90,6 +92,8 @@ export class UserServerManager extends ServerBase implements IServer, IConnectio
         this.registerHandler<GetMessagesHandler>(MESSAGE_ID.GetMessages, GetMessagesHandler);
         this.registerHandler<MessageInfoHandler>(MESSAGE_ID.MessageInfo, MessageInfoHandler);
         this.registerHandler<SetMessageStateHandler>(MESSAGE_ID.SetMessage, SetMessageStateHandler);
+        this.registerHandler<GetNextAwardHandler>(MESSAGE_ID.GetNextAward, GetNextAwardHandler);
+        this.registerHandler<GetNextBattleReportHandler>(MESSAGE_ID.GetNextBattleReport, GetNextBattleReportHandler);
 
         
         this.on('connection', this.onConnection);

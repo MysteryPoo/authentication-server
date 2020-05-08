@@ -20,7 +20,7 @@ db.once('open', function() {
     DatabaseUtility.fillAvatars();
 });
 
-const containerManager : ContainerManager = ContainerManager.GetInstance<ContainerManager>();
+const containerManager : ContainerManager = new ContainerManager();
 const lobbyManager : LobbyManager = new LobbyManager(containerManager);
 
 const server : UserServerManager = new UserServerManager(lobbyManager);

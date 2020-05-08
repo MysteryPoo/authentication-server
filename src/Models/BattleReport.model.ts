@@ -9,7 +9,7 @@ const PlayerSchema : Schema = new Schema({
 
 const BRSchema : Schema = new Schema({
     winnerId : {type : Schema.Types.ObjectId, required : true},
-    playerList : PlayerSchema
+    playerList : [{type : PlayerSchema, required : true}]
 });
 
 interface IPlayer extends Document {
@@ -20,7 +20,7 @@ interface IPlayer extends Document {
 
 export interface IBattleReport extends Document {
     winnerId : Types.ObjectId,
-    playerList : IPlayer
+    playerList : Types.Array<IPlayer>
 }
 
 export default model<IBattleReport>('BattleReport', BRSchema);
