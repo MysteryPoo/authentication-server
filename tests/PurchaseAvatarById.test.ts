@@ -1,7 +1,7 @@
 
 import { expect } from "chai";
-import { PurchaseAvatarById } from "../src/Protocol/GameClientInterface/Messages/PurchaseAvatarByID";
-import { PurchaseAvatarByIdHandler } from "../src/Protocol/GameClientInterface/Handlers/PurchaseAvatarByID";
+import { PurchaseAvatarById } from "../src/Protocol/GameClientInterface/Messages/PurchaseAvatarById";
+import { PurchaseAvatarByIdHandler } from "../src/Protocol/GameClientInterface/Handlers/PurchaseAvatarById";
 import { ServerMock } from "./Mocks/ServerMock";
 import { ClientMock } from "./Mocks/ClientMock";
 import { ObjectId } from "mongodb";
